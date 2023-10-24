@@ -2,16 +2,13 @@ import axios from "axios";
 import React from "react";
 import { useState,useEffect } from "react";
 import '../styles/login.css'
+import { useNavigate } from 'react-router-dom';
+
 export default function Login(){
-  
 
- 
-
-  
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
-    
 
     const handleEmailChange = (e) => {
         setEmail(e.target.value);
@@ -26,7 +23,7 @@ export default function Login(){
       await axios.post('http://localhost:5000/api/auth/login',{
         email:email,
         password:password
-      },{ withCredentials: true }).then(response =>{alert(response.data.message)})
+      },{ withCredentials: true }).then(response =>{alert(response.data.message);navigate('../dashboard')})
     }catch(error){
       alert(error.response.data.error)
     }

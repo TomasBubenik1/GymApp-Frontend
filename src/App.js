@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import Dashboard from "./pages/Dashboard";
 import Cookies from "universal-cookie";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import PrivateRoute from './utils/PrivateRoute';
+import Exercises from './pages/Exercises'
 
 function App() {
   const [userData, setUserData] = useState(null);
@@ -16,8 +18,11 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="login" element={<Login />}></Route>
-        <Route path='dashboard' element={<Dashboard/>}></Route>
+        <Route element={<PrivateRoute/>}>
+            <Route path='dashboard' element={<Dashboard/>} exact></Route>
+            <Route path='exercises' element={<Exercises/>} exact></Route>
+        </Route>
+        <Route path='login' element={<Login/>}></Route>
       </Routes> 
     </BrowserRouter>
   );

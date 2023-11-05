@@ -1,9 +1,0 @@
-button:disabled {
-    opacity: 0.5; 
-    cursor: not-allowed; 
-  }
-
-#btnWidgets{
-  font-size: 35px;
-  color: white;
-}

@@ -3,7 +3,7 @@ import axios from 'axios'
 import Cookies from 'universal-cookie'
 
 
-function Navbar(){
+function Navbar(currentSite){
 
     async function Logout(){
         try{
@@ -15,28 +15,23 @@ function Navbar(){
     
 
     const cookies = new Cookies
+    console.log(currentSite)
     return(
-        <nav className='w-32 bg-gray-900 h-screen'>
-        <div className='flex flex-col justify-between h-full'>
-          <div className='flex mt-2 flex-col justify-center items-center'>
-            <a className='text-2xl font-semibold text-white'>Muscle</a>
-            <a className='text-2xl font-semibold text-white'>Tracker</a>
-          </div>
+        <nav className='w-32 h-screen sticky top-0 bg-white bg-opacity-5 rounded-md h-f justify-between flex flex-col items-center'>
+          <a className='text-3xl font-semibold text-accent mt-2 self-center text-center'>Muscle Tracker</a>
           <div className='flex flex-col justify-center flex-grow-1 gap-10 items-center'>
-            <Link to={'/dashboard'}><span className="material-icons "id='btnWidgets'>space_dashboard</span></Link>
-            <span className="material-symbols-outlined" id='btnWidgets'>analytics</span>
-            <span className="material-symbols-outlined" id='btnWidgets'>calendar_today</span>
-            <span className="material-symbols-outlined" id='btnWidgets'>groups</span>
-            <Link to={'/exercises'}><span className="material-symbols-outlined" id='btnWidgets'>fitness_center</span></Link>
-            
-           
+            <Link to={'/dashboard'}><span className="material-symbols-outlined text-navIcons text-accent">space_dashboard</span></Link>
+            <span className="material-symbols-outlined text-navIcons text-primary">analytics</span>
+            <span className="material-symbols-outlined text-navIcons text-primary">calendar_today</span>
+            <span className="material-symbols-outlined text-navIcons text-primary">groups</span>
+            <Link to={'/exercises'}><span className="material-symbols-outlined text-navIcons text-primary">fitness_center</span></Link>
           </div>
           <div className='flex flex-col items-center gap-8 justify-center mb-2'>
-            <span className="material-symbols-outlined" id='btnWidgets'>settings</span>
-            <Link to={'/login'}><span className="material-symbols-outlined" id='btnWidgets' onClick={Logout}>logout</span></Link>
+          <span className="material-symbols-outlined text-navIcons text-primary">settings</span>
+            <Link to={'/login'} onClick={Logout}><span className="material-symbols-outlined text-navIcons text-primary">logout</span></Link>
           </div>
-        </div>
-      </nav>
+        </nav>
+        
     )
 }
 

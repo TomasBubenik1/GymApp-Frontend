@@ -5,7 +5,7 @@ import Dashboard from "./pages/Dashboard";
 import Cookies from "universal-cookie";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import PrivateRoute from './utils/PrivateRoute';
-import Exercises from './pages/Exercises'
+import ExercisesPage from './pages/ExercisePage'
 
 function App() {
   const [userData, setUserData] = useState(null);
@@ -20,7 +20,7 @@ function App() {
       <Routes>
         <Route element={<PrivateRoute/>}>
             <Route path='dashboard' element={<Dashboard/>} exact></Route>
-            <Route path='exercises' element={<Exercises/>} exact></Route>
+            <Route path='exercises' element={<ExercisesPage/>} exact></Route>
         </Route>
         <Route path='login' element={<Login/>}></Route>
       </Routes> 

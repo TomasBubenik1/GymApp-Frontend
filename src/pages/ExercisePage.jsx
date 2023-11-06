@@ -13,13 +13,19 @@ export default function ExercisePage(){
     const [openEquipment,setOpenEquipment] = useState(false)
     const [openPrimaryMuscle,setOpenPrimaryMuscle] = useState(false)
     const [openCategory,setOpenCategory] = useState(false)
+    const [openWorkoutPlans,setOpenWorkoutPlans] = useState(false)
+    const [openCreateDialog,setOpenCreateDialog] = useState(false)
 
-    const [selectedSkillLevel,setSkillLevel] = useState('')
-    const [selectedForce,setForce] = useState('')
-    const [selectedEquipment,setEquipment] = useState('')
-    const [selectedPrimaryMuscle,setPrimaryMuscle] = useState('')
-    const [selectedCategory,setCategory] = useState('')
-    
+    const [selectedSkillLevel,selectSkillLevel] = useState('')
+    const [selectedForce,selectForce] = useState('')
+    const [selectedEquipment,selectEquipment] = useState('')
+    const [selectedPrimaryMuscle,selectPrimaryMuscle] = useState('')
+    const [selectedCategory,selectCategory] = useState('')
+    const [selectedWorkoutPlan,selectWorkoutPlan] = useState('')
+
+
+    const [workoutPlanTitle,setWorkoutTitle] = useState('')
+    const [workoutPlanDescription,setWorkoutDescription] = useState('')
 
     const [exercises,setExercises] = useState([])
     const [loading,setLoading] = useState(false)
@@ -27,6 +33,14 @@ export default function ExercisePage(){
     const [exercisesPerPage,setExercisesPerPage] = useState(21)
     const [userData, setUserData] = useState('user');
     const [workoutPlans,setWorkoutPlans] = useState([]);
+
+    const handleTitleChange = (e) => {
+      setWorkoutTitle(e.target.value);
+    };
+
+    const handleDescriptionChange = (e) => {
+      setWorkoutDescription(e.target.value);
+    };
 
 
   const skillLevels = [
@@ -121,6 +135,18 @@ export default function ExercisePage(){
       }
     };
 
+    async function handleCreateWorkoutPlan(){
+      try{
+        console.log("pressed")
+        const newWorkoutPlan = await axios.post('http://localhost:5000/api/createworkoutplan',{
+          title:workoutPlanTitle,
+          description:workoutPlanDescription
+        })
+        alert('Sucesfully created workout plan')
+      }catch(error){
+        console.error('Error while creating workout plan',error)
+      }
+    }
 
 
 
@@ -134,7 +160,7 @@ export default function ExercisePage(){
       <div className='flex bg-backgroundcolor w-full'>
   <Navbar currentsite = {"ExercisePage"}/>
   <main className='flex-grow ml-5 bg-backgroundcolor'>
-    <nav className='w-full h-20 flex justify-between items-center bg-white bg-opacity-5 rounded-2xl'>
+    <nav className='w-full h-20 flex justify-between items-center bg-white bg-opacity-10 rounded-2xl'>
       <div className='flex items-center'>
         <h1 className='text-3xl text-text font-bold ml-5'>Exercises</h1>
       </div>
@@ -145,8 +171,8 @@ export default function ExercisePage(){
     </nav>
     <div>
       <div>
-        <div className='h-32 items-center flex mb-16 flex-wrap'>
-          <div className='ml-5 flex flex-col w-56 h-20  rounded-md bg-white bg-opacity-5' onClick={() => setOpenSkillLevel(!openSkillLevel)}>
+        <div className='h-20 flex gap-3 mt-6 mb-5'>
+          <div className='flex flex-col w-full h-full  rounded-md bg-white bg-opacity-10' onClick={() => setOpenSkillLevel(!openSkillLevel)}>
             <label className='text-base  text-gray-400 ml-6 font-semibold mt-3 self-start'>Skill Level</label>
             <div className=''>
             <div className='text-lg text-white font-semibold flex w-full'>
@@ -154,18 +180,18 @@ export default function ExercisePage(){
             <span className="material-symbols-outlined pr-4">expand_more</span>
            </div>
            {openSkillLevel && (
-             <div className="mt-6 w-56 text-white bg-opacity-5 relative rounded-md p-2 justify-center flex flex-col items-center" style={{backgroundColor:'#0d0d0d'}}>
+             <div className="mt-8 w-full text-white bg-[#1a1a1a] relative rounded-md p-2 justify-center flex flex-col items-center">
            {
             skillLevels.map((skillLevel,i)=>{
               if(skillLevel === selectedSkillLevel){
                 return(
                 <div>
-                <p className='bg-opacity-0  font-semibold'  onClick={()=>{setSkillLevel('')}} key={i} value={skillLevel}>{skillLevel}</p>
+                <p className=' font-semibold'  onClick={()=>{selectSkillLevel('')}} key={i} value={skillLevel}>{skillLevel}</p>
                 </div>
                 )
               }
               return(
-                <p className='bg-opacity-0'  onClick={()=>{setSkillLevel(skillLevel)}} key={i} value={skillLevel}>{skillLevel}</p>
+                <p className='bg-opacity-0'  onClick={()=>{selectSkillLevel(skillLevel)}} key={i} value={skillLevel}>{skillLevel}</p>
                 )
             })
            }
@@ -174,25 +200,25 @@ export default function ExercisePage(){
            }
             </div>
           </div>
-          <div className='ml-5 flex flex-col w-56 h-20  rounded-md bg-white bg-opacity-5' onClick={() => setOpenForce(!openForce)}>
+          <div className=' flex flex-col w-full h-full  rounded-md bg-white bg-opacity-10' onClick={() => setOpenForce(!openForce)}>
             <label className='text-base  text-gray-400 ml-6 font-semibold mt-3 self-start'>Force</label>
             <div className='text-lg text-white font-semibold flex w-full'>
               <p className='flex-grow pl-6'>{selectedForce}</p>
             <span className="material-symbols-outlined pr-4">expand_more</span>
            </div>
             {openForce && (
-             <div className="mt-6 w-56 text-white bg-opacity-5 relative rounded-md p-2 justify-center flex flex-col items-center" style={{backgroundColor:'#0d0d0d'}}>
+             <div className="mt-6 w-full   text-white bg-[#1a1a1a] relative rounded-md p-2 justify-center flex flex-col items-center">
             {
               forces.map((force,i)=>{
                 if(force === selectedForce){
                   return(
                   <div>
-                  <p className='bg-opacity-0  font-semibold'  onClick={()=>{setForce('')}} key={i} value={force}>{force}</p>
+                  <p className='bg-opacity-0  font-semibold'  onClick={()=>{selectForce('')}} key={i} value={force}>{force}</p>
                   </div>
                   )
                 }
                 return(
-                  <p className='bg-opacity-0'  onClick={()=>{setForce(force)}} key={i} value={force}>{force}</p>
+                  <p className='bg-opacity-0'  onClick={()=>{selectForce(force)}} key={i} value={force}>{force}</p>
                   )
               })
             }
@@ -200,25 +226,25 @@ export default function ExercisePage(){
            )
            }
           </div>
-          <div className='ml-5 flex flex-col w-56 h-20  rounded-md bg-white bg-opacity-5' onClick={() => setOpenEquipment(!openEquipment)}>
+          <div className=' flex flex-col w-full h-full  rounded-md bg-white bg-opacity-10' onClick={() => setOpenEquipment(!openEquipment)}>
             <label className='text-base  text-gray-400 ml-6 font-semibold mt-3 self-start'>Equipment</label>
             <div className='text-lg text-white font-semibold flex w-full'>
               <p className='flex-grow pl-6'>{selectedEquipment}</p>
             <span className="material-symbols-outlined pr-4">expand_more</span>
            </div>
             {openEquipment && (
-            <div className="mt-6 w-56 text-white bg-opacity-5 relative rounded-md p-2 justify-center flex flex-col items-center" style={{backgroundColor:'#0d0d0d'}}>
+            <div className="mt-6 w-full text-white bg-[#1a1a1a] relative rounded-md p-2 justify-center flex flex-col items-center">
            {
             equipments.map((equipment,i)=>{
               if(equipment === selectedEquipment){
                 return(
                 <div>
-                <p className='bg-opacity-0  font-semibold'  onClick={()=>{setEquipment('')}} key={i} value={equipment}>{equipment}</p>
+                <p className='bg-opacity-0  font-semibold'  onClick={()=>{selectEquipment('')}} key={i} value={equipment}>{equipment}</p>
                 </div>
                 )
               }
               return(
-                <p className='bg-opacity-0'  onClick={()=>{setEquipment(equipment)}} key={i} value={equipment}>{equipment}</p>
+                <p className='bg-opacity-0'  onClick={()=>{selectEquipment(equipment)}} key={i} value={equipment}>{equipment}</p>
                 )
             })
            }
@@ -226,25 +252,25 @@ export default function ExercisePage(){
            )
            }
           </div>
-          <div className='ml-5 flex flex-col w-56 h-20 rounded-md bg-white bg-opacity-5' onClick={() => setOpenPrimaryMuscle(!openPrimaryMuscle)}>
+          <div className=' flex flex-col w-full h-full rounded-md bg-white bg-opacity-10' onClick={() => setOpenPrimaryMuscle(!openPrimaryMuscle)}>
             <label className='text-base  text-gray-400 ml-6 font-semibold mt-3 self-start'>Primary Muscle</label>
             <div className='text-lg text-white font-semibold flex w-full'>
               <p className='flex-grow pl-6'>{selectedPrimaryMuscle}</p>
             <span className="material-symbols-outlined pr-4">expand_more</span>
            </div>
             {openPrimaryMuscle && (
-             <div className="mt-6 w-56 text-white bg-opacity-5 relative rounded-md p-2 justify-center flex flex-col items-center" style={{backgroundColor:'#0d0d0d'}}>
-            {
+             <div className="mt-6 w-full text-white bg-[#1a1a1a] relative rounded-md p-2 justify-center flex flex-col items-center">
+             {
               muscles.map((muscle,i)=>{
                 if(muscle === selectedPrimaryMuscle){
                   return(
                   <div>
-                  <p className='bg-opacity-0  font-semibold'  onClick={()=>{setPrimaryMuscle('')}} key={i} value={muscle}>{muscle}</p>
+                  <p className='bg-opacity-0  font-semibold'  onClick={()=>{selectPrimaryMuscle('')}} key={i} value={muscle}>{muscle}</p>
                   </div>
                   )
                 }
                 return(
-                  <p className='bg-opacity-0'  onClick={()=>{setPrimaryMuscle(muscle)}} key={i} value={muscle}>{muscle}</p>
+                  <p className='bg-opacity-0 w-full'  onClick={()=>{selectPrimaryMuscle(muscle)}} key={i} value={muscle}>{muscle}</p>
                   )
               })
             }
@@ -252,7 +278,7 @@ export default function ExercisePage(){
            )
            }
           </div>
-          <div className='ml-5 flex flex-col w-56 h-20  rounded-md bg-white bg-opacity-5' onClick={() => setOpenCategory(!openCategory)}>
+          <div className=' flex flex-col w-full h-full  rounded-md bg-white bg-opacity-10' onClick={() => setOpenCategory(!openCategory)}>
             <label className='text-base  text-gray-400 ml-6 font-semibold mt-3 self-start'>Category</label>
             <div>
             <div className='text-lg text-white font-semibold flex w-full'>
@@ -260,20 +286,20 @@ export default function ExercisePage(){
             <span className="material-symbols-outlined pr-4">expand_more</span>
            </div>
            {openCategory && (
-            <div className="mt-6 w-56 text-white bg-opacity-5 relative rounded-md p-2 justify-center flex flex-col items-center" style={{backgroundColor:'#0d0d0d'}}>
+            <div className="mt-6 w-full text-white bg-[#1a1a1a] relative rounded-md p-2 justify-center flex flex-col items-center">
               {
                 
                 categories.map((category,i)=>{
                   if(category === selectedCategory){
                     return(
                       <div>
-                    <p className='bg-opacity-0 text-accent font-semibold'  onClick={()=>{setCategory('')}} key={i} value={category}>{category}</p>
+                    <p className='bg-opacity-0 text-accent font-semibold'  onClick={()=>{selectCategory('')}} key={i} value={category}>{category}</p>
                     </div>
                     )
                   }
 
                   return(
-                  <p className='bg-opacity-0'  onClick={()=>{setCategory(category)}} key={i} value={category}>{category}</p>
+                  <p className='bg-opacity-0'  onClick={()=>{selectCategory(category)}} key={i} value={category}>{category}</p>
                   )
                   
                 })
@@ -283,18 +309,58 @@ export default function ExercisePage(){
            }
             </div>
           </div>
-          
-          
+          <div className=' flex flex-col w-full h-full  rounded-md bg-white bg-opacity-10' onClick={() => setOpenWorkoutPlans(!openWorkoutPlans)}>
+          <label className='text-base  text-gray-400 ml-6 font-semibold mt-3 self-start'>Workout Plan</label>
+          <div className='text-lg text-white font-semibold flex w-full'>
+          <p className='flex-grow pl-6 text-base'>{selectedWorkoutPlan}</p>
+          <span className="material-symbols-outlined pr-4">expand_more</span>
+           </div>
+
+           {openWorkoutPlans && (
+                <div className="mt-6 w-full text-white bg-[#1a1a1a] relative rounded-md p-2 justify-center flex flex-col items-center">
+                  {
+                    workoutPlans.map((workoutplan,i)=>{
+                      return(
+                        <div className='' key={i} onClick={()=>selectWorkoutPlan(workoutplan.title)}>
+                          {workoutplan.title}
+                        </div>
+                      )
+                    })
+                  }
+                  <div className='flex' onClick={() => setOpenCreateDialog(!openCreateDialog)}>
+                  <p>Create new</p>
+                  <span className="material-symbols-outlined text-white text-[30px]">add</span>
+                  </div>
+                </div>            
+           )}
+          </div>{openCreateDialog && (
+  <div  className="fixed inset-0 flex items-center justify-center z-50 bg-opacity-70 bg-black">
+    <div className=" rounded-md bg-[#18181B] flex flex-col" style={{height:'48vh',width:'36vw'}}>
+    <span className="material-symbols-outlined pr-4 text-white self-end p-2" onClick={()=> setOpenCreateDialog(false)}>close</span>
+      <h1 className='text-white text-2xl p-1 ml-14 font-semibold'>Create Workout Plan</h1>
+      
+      <label className='text-white font-semibold ml-16 mb-3 mt-3'>Title</label>
+      <input  onChange={handleTitleChange} type='text' placeholder='Title' className=' text-white p-1 bg-[#18181B] border rounded-md self-center align-middle' style={{width:'80%'}}/> 
+      <label className='text-white font-semibold ml-16 mb-3 mt-5' >Description</label>
+      <textarea  onChange={handleDescriptionChange} className='bg-[#18181B] border rounded-md  self-center text-white' placeholder='Description' style={{width:'80%', height:'20%'}}></textarea>
+      <div className='flex grow w-full justify-end items-end gap-2'>
+      <button  className='mb-5 rounded-md text-white text-sm font-semibold bg-[#2f2f35] w-20 h-8'>Cancel</button>
+      <button onClick={handleCreateWorkoutPlan} disabled={workoutPlanTitle.length < 3} className=' disabled:opacity-50 disabled:bg-[#2f2f35]   mb-5 mr-5 rounded-md text-white text-sm font-semibold bg-accent w-20 h-8'>Create</button>
+      </div>
+    </div>
+  </div>
+)}
 
         </div>
         <Exercises exercises={currentExercises} loading={loading}></Exercises>
       </div>
       <Pagination></Pagination>
+      
     </div>
+   
   </main>
 
 </div>
-
 
     )
 }

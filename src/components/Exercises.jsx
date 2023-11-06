@@ -13,7 +13,7 @@ export default function Exercises({ exercises, loading }) {
         return (
           <div key={index} className=' border-2 border-primary rounded-lg'>
             <div>
-            <img  className=' rounded-lg rounded-b-none' style={{width:'100%',height:'250px'}} src={`https://ik.imagekit.io/bubenik/exercises/${formattedName}/1.jpg`}alt={exercise.name}/>
+            <img  className=' rounded-lg rounded-b-none aspect-square' style={{width:'100%',height:'250px'}} src={`https://ik.imagekit.io/bubenik/exercises/${formattedName}/1.jpg`}alt={exercise.name}/>
             </div>
             <div className='text-center font-semibold bg-primary'>
               <h1 className='text-lg text-text'>{exercise.name}</h1>

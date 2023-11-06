@@ -15,9 +15,8 @@ function Navbar(currentSite){
     
 
     const cookies = new Cookies
-    console.log(currentSite)
     return(
-        <nav className='w-32 h-screen sticky top-0 bg-white bg-opacity-5 rounded-md h-f justify-between flex flex-col items-center'>
+        <nav className='w-32 h-screen sticky top-0 bg-white bg-opacity-10 rounded-md h-f justify-between flex flex-col items-center'>
           <a className='text-3xl font-semibold text-accent mt-2 self-center text-center'>Muscle Tracker</a>
           <div className='flex flex-col justify-center flex-grow-1 gap-10 items-center'>
             <Link to={'/dashboard'}><span className="material-symbols-outlined text-navIcons text-accent">space_dashboard</span></Link>

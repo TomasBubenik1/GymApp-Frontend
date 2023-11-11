@@ -16,12 +16,21 @@ export default function ExercisePage(){
     const [openWorkoutPlans,setOpenWorkoutPlans] = useState(false)
     const [openCreateDialog,setOpenCreateDialog] = useState(false)
 
-    const [selectedSkillLevel,selectSkillLevel] = useState('')
-    const [selectedForce,selectForce] = useState('')
-    const [selectedEquipment,selectEquipment] = useState('')
-    const [selectedPrimaryMuscle,selectPrimaryMuscle] = useState('')
-    const [selectedCategory,selectCategory] = useState('')
-    const [selectedWorkoutPlan,selectWorkoutPlan] = useState('')
+    const [selectedSkillLevel,selectSkillLevel] = useState(null)
+    const [selectedForce,selectForce] = useState(null)
+    const [selectedEquipment,selectEquipment] = useState(null)
+    const [selectedPrimaryMuscle,selectPrimaryMuscle] = useState([])
+    const [selectedCategory,selectCategory] = useState(null)
+    const [selectedWorkoutPlan,selectWorkoutPlan] = useState(null)
+
+    const [isSelected, setIsSelected] = useState(
+      !selectedSkillLevel ||
+      !selectedForce ||
+      !selectedEquipment ||
+      selectedPrimaryMuscle == [] ||
+      !selectedCategory ||
+      !selectedWorkoutPlan
+  );
 
 
     const [workoutPlanTitle,setWorkoutTitle] = useState('')
@@ -33,6 +42,7 @@ export default function ExercisePage(){
     const [exercisesPerPage,setExercisesPerPage] = useState(21)
     const [userData, setUserData] = useState('user');
     const [workoutPlans,setWorkoutPlans] = useState([]);
+    const [filteredExercises,setFilteredExercises] = useState([])
 
     const handleTitleChange = (e) => {
       setWorkoutTitle(e.target.value);
@@ -102,14 +112,18 @@ export default function ExercisePage(){
       "E-z curl bar",
       "Foam roll",
     ];
+
     
+    console.log(isSelected)
 
     useEffect(() => {
 
       fetchLoggedInData();
       fetchExerciseData();
     }, []);
-  
+
+    
+    
 
     async function fetchExerciseData(){
       try{
@@ -121,6 +135,18 @@ export default function ExercisePage(){
       }catch(err){
         console.error('Error fetching exercise data')
       }
+    }
+
+    async function fetchSelectedExercises(){
+
+      const response = await axios.post('http://localhost:5000/api/getfilteredexercises',{
+          selectCategory:  selectedCategory ? selectedCategory.toLowerCase(): selectedCategory,
+          selectedEquipment: selectedEquipment ? selectedEquipment.toLowerCase(): selectedEquipment,
+          selectedForce:selectedForce ? selectedForce.toLowerCase() : selectedForce,
+          selectedSkillLevel:selectedSkillLevel ? selectedSkillLevel.toLowerCase() : selectedSkillLevel
+      });
+      console.log(response)
+  
     }
 
     async function fetchLoggedInData(){
@@ -138,11 +164,13 @@ export default function ExercisePage(){
     async function handleCreateWorkoutPlan(){
       try{
         console.log("pressed")
-        const newWorkoutPlan = await axios.post('http://localhost:5000/api/createworkoutplan',{
+        const response = await axios.post('http://localhost:5000/api/createworkoutplan',{
           title:workoutPlanTitle,
-          description:workoutPlanDescription
+          description:workoutPlanDescription,
+          userId: userData.id
+
         })
-        alert('Sucesfully created workout plan')
+        console.log(response)
       }catch(error){
         console.error('Error while creating workout plan',error)
       }
@@ -154,7 +182,6 @@ export default function ExercisePage(){
     const indexOfLastExercise = currentPage * exercisesPerPage;
     const indexOfFirstExercise = indexOfLastExercise-exercisesPerPage
     const currentExercises = exercises.slice(indexOfFirstExercise,indexOfLastExercise)
-
     
     return(
       <div className='flex bg-backgroundcolor w-full'>
@@ -186,7 +213,7 @@ export default function ExercisePage(){
               if(skillLevel === selectedSkillLevel){
                 return(
                 <div>
-                <p className=' font-semibold'  onClick={()=>{selectSkillLevel('')}} key={i} value={skillLevel}>{skillLevel}</p>
+                <p className=' font-semibold'  onClick={()=>{selectSkillLevel(null)}} key={i} value={skillLevel}>{skillLevel}</p>
                 </div>
                 )
               }
@@ -213,7 +240,7 @@ export default function ExercisePage(){
                 if(force === selectedForce){
                   return(
                   <div>
-                  <p className='bg-opacity-0  font-semibold'  onClick={()=>{selectForce('')}} key={i} value={force}>{force}</p>
+                  <p className='bg-opacity-0  font-semibold'  onClick={()=>{selectForce(null)}} key={i} value={force}>{force}</p>
                   </div>
                   )
                 }
@@ -239,7 +266,7 @@ export default function ExercisePage(){
               if(equipment === selectedEquipment){
                 return(
                 <div>
-                <p className='bg-opacity-0  font-semibold'  onClick={()=>{selectEquipment('')}} key={i} value={equipment}>{equipment}</p>
+                <p className='bg-opacity-0  font-semibold'  onClick={()=>{selectEquipment(null)}} key={i} value={equipment}>{equipment}</p>
                 </div>
                 )
               }
@@ -265,7 +292,7 @@ export default function ExercisePage(){
                 if(muscle === selectedPrimaryMuscle){
                   return(
                   <div>
-                  <p className='bg-opacity-0  font-semibold'  onClick={()=>{selectPrimaryMuscle('')}} key={i} value={muscle}>{muscle}</p>
+                  <p className='bg-opacity-0  font-semibold'  onClick={()=>{selectPrimaryMuscle(null)}} key={i} value={muscle}>{muscle}</p>
                   </div>
                   )
                 }
@@ -293,7 +320,7 @@ export default function ExercisePage(){
                   if(category === selectedCategory){
                     return(
                       <div>
-                    <p className='bg-opacity-0 text-accent font-semibold'  onClick={()=>{selectCategory('')}} key={i} value={category}>{category}</p>
+                    <p className='bg-opacity-0 text-accent font-semibold'  onClick={()=>{selectCategory(null)}} key={i} value={category}>{category}</p>
                     </div>
                     )
                   }
@@ -352,7 +379,9 @@ export default function ExercisePage(){
 )}
 
         </div>
+        { isSelected ? <p className=' text-white' onClick={fetchSelectedExercises}>Ahoj</p> :
         <Exercises exercises={currentExercises} loading={loading}></Exercises>
+}
       </div>
       <Pagination></Pagination>
       

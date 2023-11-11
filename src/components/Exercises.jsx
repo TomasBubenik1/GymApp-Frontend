@@ -11,14 +11,20 @@ export default function Exercises({ exercises, loading }) {
       {exercises.map((exercise, index) => {
         const formattedName = exercise.name.replace(/[\s/]/g, '_'); // Replace both spaces and forward slashes
         return (
-          <div key={index} className=' border-2 border-primary rounded-lg'>
+          <div key={index} className=' rounded-lg'>
             <div>
             <img  className=' rounded-lg rounded-b-none aspect-square' style={{width:'100%',height:'250px'}} src={`https://ik.imagekit.io/bubenik/exercises/${formattedName}/1.jpg`}alt={exercise.name}/>
             </div>
-            <div className='text-center font-semibold bg-primary'>
-              <h1 className='text-lg text-text'>{exercise.name}</h1>
-              <button className='text-text'onClick={() => {console.log(exercise.name)}}>Add</button>
+            <h1 className='text-2xl text-text text-left font-semibold'>{exercise.name}</h1> 
+            <div className='flex gap-3'> 
+            <div className='text-center font-semibold bg-[#18181B] p-2  self-center w-full'>
+              <button className='text-text text-center'onClick={() => {console.log(exercise.name)}}>Add</button>
             </div>
+            <div className='text-center font-semibold bg-[#18181B] p-2  self-center w-full' >
+              <button className='text-text text-center'onClick={() => {console.log(exercise.name)}}>Details</button>
+            </div>
+            </div>
+            
           </div>
         );
       })}

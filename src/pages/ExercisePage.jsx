@@ -16,21 +16,18 @@ export default function ExercisePage(){
     const [openWorkoutPlans,setOpenWorkoutPlans] = useState(false)
     const [openCreateDialog,setOpenCreateDialog] = useState(false)
 
-    const [selectedSkillLevel,selectSkillLevel] = useState(null)
-    const [selectedForce,selectForce] = useState(null)
-    const [selectedEquipment,selectEquipment] = useState(null)
-    const [selectedPrimaryMuscle,selectPrimaryMuscle] = useState([])
-    const [selectedCategory,selectCategory] = useState(null)
+    const [selectedOptions, setSelectedOptions] = useState({
+      selectedSkillLevel: null,
+      selectedForce: null,
+      selectedEquipment: null,
+      selectedPrimaryMuscle: [],
+      selectedCategory: null,
+    });
+    
     const [selectedWorkoutPlan,selectWorkoutPlan] = useState(null)
+    const [selectedWorkoutPlanId,selectWorkoutPlanId] = useState(null)
 
-    const [isSelected, setIsSelected] = useState(
-      !selectedSkillLevel ||
-      !selectedForce ||
-      !selectedEquipment ||
-      selectedPrimaryMuscle == [] ||
-      !selectedCategory ||
-      !selectedWorkoutPlan
-  );
+    
 
 
     const [workoutPlanTitle,setWorkoutTitle] = useState('')
@@ -42,7 +39,6 @@ export default function ExercisePage(){
     const [exercisesPerPage,setExercisesPerPage] = useState(21)
     const [userData, setUserData] = useState('user');
     const [workoutPlans,setWorkoutPlans] = useState([]);
-    const [filteredExercises,setFilteredExercises] = useState([])
 
     const handleTitleChange = (e) => {
       setWorkoutTitle(e.target.value);
@@ -51,6 +47,7 @@ export default function ExercisePage(){
     const handleDescriptionChange = (e) => {
       setWorkoutDescription(e.target.value);
     };
+
 
 
   const skillLevels = [
@@ -114,14 +111,9 @@ export default function ExercisePage(){
     ];
 
     
-    console.log(isSelected)
+  
 
-    useEffect(() => {
-
-      fetchLoggedInData();
-      fetchExerciseData();
-    }, []);
-
+   
     
     
 
@@ -138,15 +130,17 @@ export default function ExercisePage(){
     }
 
     async function fetchSelectedExercises(){
-
-      const response = await axios.post('http://localhost:5000/api/getfilteredexercises',{
-          selectCategory:  selectedCategory ? selectedCategory.toLowerCase(): selectedCategory,
-          selectedEquipment: selectedEquipment ? selectedEquipment.toLowerCase(): selectedEquipment,
-          selectedForce:selectedForce ? selectedForce.toLowerCase() : selectedForce,
-          selectedSkillLevel:selectedSkillLevel ? selectedSkillLevel.toLowerCase() : selectedSkillLevel
-      });
-      console.log(response)
-  
+      setLoading(true);
+      const payload = {}
+      if (selectedOptions.selectedSkillLevel){payload.selectedSkillLevel = selectedOptions.selectedSkillLevel.toLowerCase()}
+      if (selectedOptions.selectedForce){payload.selectedForce = selectedOptions.selectedForce.toLowerCase()}
+      if (selectedOptions.selectedEquipment){payload.selectedEquipment = selectedOptions.selectedEquipment.toLowerCase()}
+      if (selectedOptions.selectedPrimaryMuscle.length > 0 ){payload.selectedPrimaryMuscle = selectedOptions.selectedPrimaryMuscle}else{payload.selectedPrimaryMuscle=[]}
+      if (selectedOptions.selectedCategory){payload.selectedCategory = selectedOptions.selectedCategory.toLowerCase()}
+      
+      const response = await axios.post('http://localhost:5000/api/getfilteredexercises',payload);
+      setExercises(response.data.filteredExercises);
+      setLoading(false);
     }
 
     async function fetchLoggedInData(){
@@ -182,7 +176,22 @@ export default function ExercisePage(){
     const indexOfLastExercise = currentPage * exercisesPerPage;
     const indexOfFirstExercise = indexOfLastExercise-exercisesPerPage
     const currentExercises = exercises.slice(indexOfFirstExercise,indexOfLastExercise)
-    
+
+
+    useEffect(() => {
+
+      fetchLoggedInData();
+      fetchExerciseData();
+    }, []);
+
+     
+    useEffect(() => {
+    console.log(selectedOptions)
+    fetchSelectedExercises()
+    }, [selectedOptions]);
+
+  
+   
     return(
       <div className='flex bg-backgroundcolor w-full'>
   <Navbar currentsite = {"ExercisePage"}/>
@@ -203,22 +212,22 @@ export default function ExercisePage(){
             <label className='text-base  text-gray-400 ml-6 font-semibold mt-3 self-start'>Skill Level</label>
             <div className=''>
             <div className='text-lg text-white font-semibold flex w-full'>
-              <p className='flex-grow pl-6'>{selectedSkillLevel}</p>
+              <p className='flex-grow pl-6'>{selectedOptions.selectedSkillLevel}</p>
             <span className="material-symbols-outlined pr-4">expand_more</span>
            </div>
            {openSkillLevel && (
              <div className="mt-8 w-full text-white bg-[#1a1a1a] relative rounded-md p-2 justify-center flex flex-col items-center">
            {
             skillLevels.map((skillLevel,i)=>{
-              if(skillLevel === selectedSkillLevel){
+              if(skillLevel === selectedOptions.selectedSkillLevel){
                 return(
                 <div>
-                <p className=' font-semibold'  onClick={()=>{selectSkillLevel(null)}} key={i} value={skillLevel}>{skillLevel}</p>
+<p className='font-semibold' onClick={()=> setSelectedOptions((prevOptions)=> ({...prevOptions,selectedSkillLevel:null}))} key={i} value={skillLevel}>{skillLevel}</p>
                 </div>
                 )
               }
               return(
-                <p className='bg-opacity-0'  onClick={()=>{selectSkillLevel(skillLevel)}} key={i} value={skillLevel}>{skillLevel}</p>
+                <p className='bg-opacity-0'  onClick={()=> setSelectedOptions((prevOptions)=> ({...prevOptions,selectedSkillLevel:skillLevel}))} key={i} value={skillLevel}>{skillLevel}</p>
                 )
             })
            }
@@ -230,22 +239,22 @@ export default function ExercisePage(){
           <div className=' flex flex-col w-full h-full  rounded-md bg-white bg-opacity-10' onClick={() => setOpenForce(!openForce)}>
             <label className='text-base  text-gray-400 ml-6 font-semibold mt-3 self-start'>Force</label>
             <div className='text-lg text-white font-semibold flex w-full'>
-              <p className='flex-grow pl-6'>{selectedForce}</p>
+              <p className='flex-grow pl-6'>{selectedOptions.selectedForce}</p>
             <span className="material-symbols-outlined pr-4">expand_more</span>
            </div>
             {openForce && (
              <div className="mt-6 w-full   text-white bg-[#1a1a1a] relative rounded-md p-2 justify-center flex flex-col items-center">
             {
               forces.map((force,i)=>{
-                if(force === selectedForce){
+                if(force === selectedOptions.selectedForce){
                   return(
                   <div>
-                  <p className='bg-opacity-0  font-semibold'  onClick={()=>{selectForce(null)}} key={i} value={force}>{force}</p>
+                  <p className='bg-opacity-0  font-semibold'  onClick={()=> setSelectedOptions((prevOptions)=> ({...prevOptions,selectedForce:null}))} key={i} value={force}>{force}</p>
                   </div>
                   )
                 }
                 return(
-                  <p className='bg-opacity-0'  onClick={()=>{selectForce(force)}} key={i} value={force}>{force}</p>
+                  <p className='bg-opacity-0'  onClick={()=> setSelectedOptions((prevOptions)=> ({...prevOptions,selectedForce:force}))} key={i} value={force}>{force}</p>
                   )
               })
             }
@@ -256,22 +265,22 @@ export default function ExercisePage(){
           <div className=' flex flex-col w-full h-full  rounded-md bg-white bg-opacity-10' onClick={() => setOpenEquipment(!openEquipment)}>
             <label className='text-base  text-gray-400 ml-6 font-semibold mt-3 self-start'>Equipment</label>
             <div className='text-lg text-white font-semibold flex w-full'>
-              <p className='flex-grow pl-6'>{selectedEquipment}</p>
+              <p className='flex-grow pl-6'>{selectedOptions.selectedEquipment}</p>
             <span className="material-symbols-outlined pr-4">expand_more</span>
            </div>
             {openEquipment && (
             <div className="mt-6 w-full text-white bg-[#1a1a1a] relative rounded-md p-2 justify-center flex flex-col items-center">
            {
             equipments.map((equipment,i)=>{
-              if(equipment === selectedEquipment){
+              if(equipment === selectedOptions.selectedEquipment){
                 return(
                 <div>
-                <p className='bg-opacity-0  font-semibold'  onClick={()=>{selectEquipment(null)}} key={i} value={equipment}>{equipment}</p>
+                <p className='bg-opacity-0  font-semibold'  onClick={()=> setSelectedOptions((prevOptions)=> ({...prevOptions,selectedEquipment:null}))} key={i} value={equipment}>{equipment}</p>
                 </div>
                 )
               }
               return(
-                <p className='bg-opacity-0'  onClick={()=>{selectEquipment(equipment)}} key={i} value={equipment}>{equipment}</p>
+                <p className='bg-opacity-0'  onClick={()=> setSelectedOptions((prevOptions)=> ({...prevOptions,selectedEquipment:equipment}))} key={i} value={equipment}>{equipment}</p>
                 )
             })
            }
@@ -282,22 +291,22 @@ export default function ExercisePage(){
           <div className=' flex flex-col w-full h-full rounded-md bg-white bg-opacity-10' onClick={() => setOpenPrimaryMuscle(!openPrimaryMuscle)}>
             <label className='text-base  text-gray-400 ml-6 font-semibold mt-3 self-start'>Primary Muscle</label>
             <div className='text-lg text-white font-semibold flex w-full'>
-              <p className='flex-grow pl-6'>{selectedPrimaryMuscle}</p>
+              <p className='flex-grow pl-6'>{selectedOptions.selectedPrimaryMuscle}</p>
             <span className="material-symbols-outlined pr-4">expand_more</span>
            </div>
             {openPrimaryMuscle && (
              <div className="mt-6 w-full text-white bg-[#1a1a1a] relative rounded-md p-2 justify-center flex flex-col items-center">
              {
               muscles.map((muscle,i)=>{
-                if(muscle === selectedPrimaryMuscle){
+                if(selectedOptions.selectedPrimaryMuscle.includes(muscle)){
                   return(
                   <div>
-                  <p className='bg-opacity-0  font-semibold'  onClick={()=>{selectPrimaryMuscle(null)}} key={i} value={muscle}>{muscle}</p>
+                  <p className='bg-opacity-0  font-semibold' onClick={()=> setSelectedOptions((prevOptions)=> ({...prevOptions,selectedPrimaryMuscle: [] }))} key={i} value={muscle}>{muscle}</p>
                   </div>
                   )
                 }
                 return(
-                  <p className='bg-opacity-0 w-full'  onClick={()=>{selectPrimaryMuscle(muscle)}} key={i} value={muscle}>{muscle}</p>
+                    <p className='bg-opacity-0 w-full' onClick={() => setSelectedOptions((prevOptions) => ({ ...prevOptions, selectedPrimaryMuscle: [muscle] }))} key={i} value={muscle}>{muscle}</p>
                   )
               })
             }
@@ -309,7 +318,7 @@ export default function ExercisePage(){
             <label className='text-base  text-gray-400 ml-6 font-semibold mt-3 self-start'>Category</label>
             <div>
             <div className='text-lg text-white font-semibold flex w-full'>
-              <p className='flex-grow pl-6'>{selectedCategory}</p>
+              <p className='flex-grow pl-6'>{selectedOptions.selectedCategory}</p>
             <span className="material-symbols-outlined pr-4">expand_more</span>
            </div>
            {openCategory && (
@@ -317,16 +326,16 @@ export default function ExercisePage(){
               {
                 
                 categories.map((category,i)=>{
-                  if(category === selectedCategory){
+                  if(category === selectedOptions.selectedCategory){
                     return(
                       <div>
-                    <p className='bg-opacity-0 text-accent font-semibold'  onClick={()=>{selectCategory(null)}} key={i} value={category}>{category}</p>
+                    <p className='bg-opacity-0 text-accent font-semibold'  onClick={()=> setSelectedOptions((prevOptions)=> ({...prevOptions,selectedCategory:null}))} key={i} value={category}>{category}</p>
                     </div>
                     )
                   }
 
                   return(
-                  <p className='bg-opacity-0'  onClick={()=>{selectCategory(category)}} key={i} value={category}>{category}</p>
+                  <p className='bg-opacity-0'  onClick={()=> setSelectedOptions((prevOptions)=> ({...prevOptions,selectedCategory:category}))} key={i} value={category}>{category}</p>
                   )
                   
                 })
@@ -348,7 +357,7 @@ export default function ExercisePage(){
                   {
                     workoutPlans.map((workoutplan,i)=>{
                       return(
-                        <div className='' key={i} onClick={()=>selectWorkoutPlan(workoutplan.title)}>
+                        <div className='' key={i} onClick={()=>(selectWorkoutPlan(workoutplan.title),selectWorkoutPlanId(workoutplan.id))}>
                           {workoutplan.title}
                         </div>
                       )
@@ -379,9 +388,7 @@ export default function ExercisePage(){
 )}
 
         </div>
-        { isSelected ? <p className=' text-white' onClick={fetchSelectedExercises}>Ahoj</p> :
-        <Exercises exercises={currentExercises} loading={loading}></Exercises>
-}
+        <Exercises exercises={currentExercises} loading={loading} workoutPlanId={selectedWorkoutPlanId} userId={userData.id}></Exercises>
       </div>
       <Pagination></Pagination>
       
@@ -390,8 +397,8 @@ export default function ExercisePage(){
   </main>
 
 </div>
-
     )
+    
 }
 
   

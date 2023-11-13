@@ -194,19 +194,20 @@ export default function ExercisePage(){
    
     return(
       <div className='flex bg-backgroundcolor w-full'>
-  <Navbar currentsite = {"ExercisePage"}/>
+  <Navbar currentSite={"exercises"}/>
   <main className='flex-grow ml-5 bg-backgroundcolor'>
     <nav className='w-full h-20 flex justify-between items-center bg-white bg-opacity-10 rounded-2xl'>
       <div className='flex items-center'>
         <h1 className='text-3xl text-text font-bold ml-5'>Exercises</h1>
       </div>
-      <div className='text-3xl flex items-center gap-2'>
-        <h1 className='text-stone-300'>Welcome back</h1>
-        <h1 className=' text-accent font-semibold mr-3'>{userData.name}!</h1>
-      </div>
+      
     </nav>
     <div>
       <div>
+      <div className='text-2xl flex items-center gap-2 mt-3'>
+        <h1 className='text-stone-300'>Welcome back</h1>
+        <h1 className=' text-accent font-bold mr-3'>{userData.name}!👋</h1>
+      </div>
         <div className='h-20 flex gap-3 mt-6 mb-5'>
           <div className='flex flex-col w-full h-full  rounded-md bg-white bg-opacity-10' onClick={() => setOpenSkillLevel(!openSkillLevel)}>
             <label className='text-base  text-gray-400 ml-6 font-semibold mt-3 self-start'>Skill Level</label>
@@ -386,8 +387,15 @@ export default function ExercisePage(){
     </div>
   </div>
 )}
-
         </div>
+        <div className='flex w-full align-middle justify-end gap-3'>
+        <span className="material-symbols-outlined text-gray-400 bg-[#1a1a1a] p-2 rounded-lg">
+        arrow_back_ios
+</span>
+<span className="material-symbols-outlined text-gray-400 bg-[#1a1a1a] p-2 rounded-lg mr-5">
+        arrow_forward_ios
+</span>
+</div>
         <Exercises exercises={currentExercises} loading={loading} workoutPlanId={selectedWorkoutPlanId} userId={userData.id}></Exercises>
       </div>
       <Pagination></Pagination>

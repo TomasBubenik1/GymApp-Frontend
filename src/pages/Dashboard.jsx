@@ -36,16 +36,12 @@ const Dashboard = () => {
 
  console.log(workoutPlans)
     return (
-  <div className='flex bg-backgroundcolor'>
-    <Navbar currentsite={"Dashboard"}/>
-    <main className='w-screen ml-5'>
-    <nav className='w-full h-20 flex justify-between items-center bg-white bg-opacity-5 rounded-2xl'>
+  <div className='flex bg-backgroundcolor w-full'>
+    <Navbar currentSite={"dashboard"}/>
+    <main className='flex-grow ml-5 bg-backgroundcolor'>
+    <nav className='w-full h-20 flex justify-between items-center bg-white bg-opacity-10 rounded-2xl'>
       <div className='flex items-center'>
         <h1 className='text-3xl text-text font-bold ml-5'>Dashboard</h1>
-      </div>
-      <div className='text-3xl flex items-center gap-2'>
-        <h1 className='text-stone-300'>Welcome back</h1>
-        <h1 className=' text-accent font-semibold mr-3'>{userData.name}!</h1>
       </div>
     </nav>
         <div>

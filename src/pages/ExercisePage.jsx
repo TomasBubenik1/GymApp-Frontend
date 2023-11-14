@@ -3,6 +3,7 @@ import Navbar from '../components/Navbar'
 import axios from 'axios'
 import Exercises from '../components/Exercises'
 import Pagination from '../components/Pagination'
+import DropdownMenuFilter from '../components/Dropdown'
 
 
 export default function ExercisePage(){
@@ -15,6 +16,7 @@ export default function ExercisePage(){
     const [openCategory,setOpenCategory] = useState(false)
     const [openWorkoutPlans,setOpenWorkoutPlans] = useState(false)
     const [openCreateDialog,setOpenCreateDialog] = useState(false)
+    
 
     const [selectedOptions, setSelectedOptions] = useState({
       selectedSkillLevel: null,
@@ -135,9 +137,10 @@ export default function ExercisePage(){
       if (selectedOptions.selectedSkillLevel){payload.selectedSkillLevel = selectedOptions.selectedSkillLevel.toLowerCase()}
       if (selectedOptions.selectedForce){payload.selectedForce = selectedOptions.selectedForce.toLowerCase()}
       if (selectedOptions.selectedEquipment){payload.selectedEquipment = selectedOptions.selectedEquipment.toLowerCase()}
-      if (selectedOptions.selectedPrimaryMuscle.length > 0 ){payload.selectedPrimaryMuscle = selectedOptions.selectedPrimaryMuscle}else{payload.selectedPrimaryMuscle=[]}
+      if (selectedOptions.selectedPrimaryMuscle != null){payload.selectedPrimaryMuscle = selectedOptions.selectedPrimaryMuscle}else{payload.selectedPrimaryMuscle=[]}
       if (selectedOptions.selectedCategory){payload.selectedCategory = selectedOptions.selectedCategory.toLowerCase()}
-      
+      if(Object.keys(payload).length < 0 ){return}
+
       const response = await axios.post('http://localhost:5000/api/getfilteredexercises',payload);
       setExercises(response.data.filteredExercises);
       setLoading(false);
@@ -209,143 +212,13 @@ export default function ExercisePage(){
         <h1 className=' text-accent font-bold mr-3'>{userData.name}!👋</h1>
       </div>
         <div className='h-20 flex gap-3 mt-6 mb-5'>
-          <div className='flex flex-col w-full h-full  rounded-md bg-white bg-opacity-10' onClick={() => setOpenSkillLevel(!openSkillLevel)}>
-            <label className='text-base  text-gray-400 ml-6 font-semibold mt-3 self-start'>Skill Level</label>
-            <div className=''>
-            <div className='text-lg text-white font-semibold flex w-full'>
-              <p className='flex-grow pl-6'>{selectedOptions.selectedSkillLevel}</p>
-            <span className="material-symbols-outlined pr-4">expand_more</span>
-           </div>
-           {openSkillLevel && (
-             <div className="mt-8 w-full text-white bg-[#1a1a1a] relative rounded-md p-2 justify-center flex flex-col items-center">
-           {
-            skillLevels.map((skillLevel,i)=>{
-              if(skillLevel === selectedOptions.selectedSkillLevel){
-                return(
-                <div>
-<p className='font-semibold' onClick={()=> setSelectedOptions((prevOptions)=> ({...prevOptions,selectedSkillLevel:null}))} key={i} value={skillLevel}>{skillLevel}</p>
-                </div>
-                )
-              }
-              return(
-                <p className='bg-opacity-0'  onClick={()=> setSelectedOptions((prevOptions)=> ({...prevOptions,selectedSkillLevel:skillLevel}))} key={i} value={skillLevel}>{skillLevel}</p>
-                )
-            })
-           }
-          </div>
-           )
-           }
-            </div>
-          </div>
-          <div className=' flex flex-col w-full h-full  rounded-md bg-white bg-opacity-10' onClick={() => setOpenForce(!openForce)}>
-            <label className='text-base  text-gray-400 ml-6 font-semibold mt-3 self-start'>Force</label>
-            <div className='text-lg text-white font-semibold flex w-full'>
-              <p className='flex-grow pl-6'>{selectedOptions.selectedForce}</p>
-            <span className="material-symbols-outlined pr-4">expand_more</span>
-           </div>
-            {openForce && (
-             <div className="mt-6 w-full   text-white bg-[#1a1a1a] relative rounded-md p-2 justify-center flex flex-col items-center">
-            {
-              forces.map((force,i)=>{
-                if(force === selectedOptions.selectedForce){
-                  return(
-                  <div>
-                  <p className='bg-opacity-0  font-semibold'  onClick={()=> setSelectedOptions((prevOptions)=> ({...prevOptions,selectedForce:null}))} key={i} value={force}>{force}</p>
-                  </div>
-                  )
-                }
-                return(
-                  <p className='bg-opacity-0'  onClick={()=> setSelectedOptions((prevOptions)=> ({...prevOptions,selectedForce:force}))} key={i} value={force}>{force}</p>
-                  )
-              })
-            }
-          </div>
-           )
-           }
-          </div>
-          <div className=' flex flex-col w-full h-full  rounded-md bg-white bg-opacity-10' onClick={() => setOpenEquipment(!openEquipment)}>
-            <label className='text-base  text-gray-400 ml-6 font-semibold mt-3 self-start'>Equipment</label>
-            <div className='text-lg text-white font-semibold flex w-full'>
-              <p className='flex-grow pl-6'>{selectedOptions.selectedEquipment}</p>
-            <span className="material-symbols-outlined pr-4">expand_more</span>
-           </div>
-            {openEquipment && (
-            <div className="mt-6 w-full text-white bg-[#1a1a1a] relative rounded-md p-2 justify-center flex flex-col items-center">
-           {
-            equipments.map((equipment,i)=>{
-              if(equipment === selectedOptions.selectedEquipment){
-                return(
-                <div>
-                <p className='bg-opacity-0  font-semibold'  onClick={()=> setSelectedOptions((prevOptions)=> ({...prevOptions,selectedEquipment:null}))} key={i} value={equipment}>{equipment}</p>
-                </div>
-                )
-              }
-              return(
-                <p className='bg-opacity-0'  onClick={()=> setSelectedOptions((prevOptions)=> ({...prevOptions,selectedEquipment:equipment}))} key={i} value={equipment}>{equipment}</p>
-                )
-            })
-           }
-          </div>
-           )
-           }
-          </div>
-          <div className=' flex flex-col w-full h-full rounded-md bg-white bg-opacity-10' onClick={() => setOpenPrimaryMuscle(!openPrimaryMuscle)}>
-            <label className='text-base  text-gray-400 ml-6 font-semibold mt-3 self-start'>Primary Muscle</label>
-            <div className='text-lg text-white font-semibold flex w-full'>
-              <p className='flex-grow pl-6'>{selectedOptions.selectedPrimaryMuscle}</p>
-            <span className="material-symbols-outlined pr-4">expand_more</span>
-           </div>
-            {openPrimaryMuscle && (
-             <div className="mt-6 w-full text-white bg-[#1a1a1a] relative rounded-md p-2 justify-center flex flex-col items-center">
-             {
-              muscles.map((muscle,i)=>{
-                if(selectedOptions.selectedPrimaryMuscle.includes(muscle)){
-                  return(
-                  <div>
-                  <p className='bg-opacity-0  font-semibold' onClick={()=> setSelectedOptions((prevOptions)=> ({...prevOptions,selectedPrimaryMuscle: [] }))} key={i} value={muscle}>{muscle}</p>
-                  </div>
-                  )
-                }
-                return(
-                    <p className='bg-opacity-0 w-full' onClick={() => setSelectedOptions((prevOptions) => ({ ...prevOptions, selectedPrimaryMuscle: [muscle] }))} key={i} value={muscle}>{muscle}</p>
-                  )
-              })
-            }
-          </div>
-           )
-           }
-          </div>
-          <div className=' flex flex-col w-full h-full  rounded-md bg-white bg-opacity-10' onClick={() => setOpenCategory(!openCategory)}>
-            <label className='text-base  text-gray-400 ml-6 font-semibold mt-3 self-start'>Category</label>
-            <div>
-            <div className='text-lg text-white font-semibold flex w-full'>
-              <p className='flex-grow pl-6'>{selectedOptions.selectedCategory}</p>
-            <span className="material-symbols-outlined pr-4">expand_more</span>
-           </div>
-           {openCategory && (
-            <div className="mt-6 w-full text-white bg-[#1a1a1a] relative rounded-md p-2 justify-center flex flex-col items-center">
-              {
-                
-                categories.map((category,i)=>{
-                  if(category === selectedOptions.selectedCategory){
-                    return(
-                      <div>
-                    <p className='bg-opacity-0 text-accent font-semibold'  onClick={()=> setSelectedOptions((prevOptions)=> ({...prevOptions,selectedCategory:null}))} key={i} value={category}>{category}</p>
-                    </div>
-                    )
-                  }
-
-                  return(
-                  <p className='bg-opacity-0'  onClick={()=> setSelectedOptions((prevOptions)=> ({...prevOptions,selectedCategory:category}))} key={i} value={category}>{category}</p>
-                  )
-                  
-                })
-              }
-          </div>
-           )
-           }
-            </div>
-          </div>
+          
+          
+          <DropdownMenuFilter label={"Level"} onSelect={(selectedSkillLevel)=> setSelectedOptions((prevOptions)=>({...prevOptions,selectedSkillLevel}))} selectedOption={selectedOptions.selectedSkillLevel} options={skillLevels}/>
+          <DropdownMenuFilter label={"Force"} onSelect={(selectedForce)=>setSelectedOptions((prevOptions)=>({...prevOptions,selectedForce}))} selectedOption={selectedOptions.selectedForce} options={forces}/>
+          <DropdownMenuFilter label={"Equipment"} onSelect={(selectedEquipment) => setSelectedOptions((prevOptions) => ({ ...prevOptions, selectedEquipment }))} selectedOption={selectedOptions.selectedEquipment} options={equipments}/>
+          <DropdownMenuFilter label={"Primary Muscle"} onSelect={(selectedPrimaryMuscle)=> setSelectedOptions((prevOptions)=>({...prevOptions,selectedPrimaryMuscle}))} selectedOption={selectedOptions.selectedPrimaryMuscle} options={muscles}></DropdownMenuFilter>
+          <DropdownMenuFilter label={"Category"} onSelect={(selectedCategory)=> setSelectedOptions((prevOptions)=>({...prevOptions,selectedCategory}))}selectedOption={selectedOptions.selectedCategory} options={categories}></DropdownMenuFilter>
           <div className=' flex flex-col w-full h-full  rounded-md bg-white bg-opacity-10' onClick={() => setOpenWorkoutPlans(!openWorkoutPlans)}>
           <label className='text-base  text-gray-400 ml-6 font-semibold mt-3 self-start'>Workout Plan</label>
           <div className='text-lg text-white font-semibold flex w-full'>

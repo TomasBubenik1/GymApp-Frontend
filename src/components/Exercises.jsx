@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 export default function Exercises({exercises,loading,workoutPlanId,userId}) {
   if (loading) {
@@ -36,7 +37,7 @@ return (
             <button className='text-text text-center' onClick={() => handleAddIntoExercisePlan(exercise.id)}>Add</button>
             </div>
             <div className='text-center font-semibold bg-[#18181B] p-2  self-center w-full rounded-md' >
-              <button className='text-text text-center'onClick={() => {console.log(exercise.name)}}>Details</button>
+              <Link to={`/details/${exercise.id}`}className='text-text text-center'>Details</Link>
             </div>
             </div>
             

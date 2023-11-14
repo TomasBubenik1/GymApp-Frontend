@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import Cookies from 'universal-cookie';
 import axios from 'axios';
 import Navbar from '../components/Navbar';
-import { Link } from 'react-router-dom';
 
 const Dashboard = () => {
 
@@ -10,7 +8,6 @@ const Dashboard = () => {
 
 
   const [userData, setUserData] = useState([]);
-  const [exercises,setExercises] = useState([]);
   const [workoutPlans,setWorkoutPlans] = useState([]);
 
    useEffect(() => {

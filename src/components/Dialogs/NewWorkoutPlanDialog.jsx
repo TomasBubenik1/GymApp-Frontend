@@ -4,7 +4,7 @@ import React from 'react';
 
 
 
-export default function NewWorkoutPlanDialog(userId,stav){
+export default function NewWorkoutPlanDialog(userId,{isWorkOutOpen}){
 
     const [workoutPlanTitle,setWorkoutTitle] = useState('')
     const [workoutPlanDescription,setWorkoutDescription] = useState('')
@@ -36,7 +36,7 @@ export default function NewWorkoutPlanDialog(userId,stav){
     return(
     <div  className="fixed inset-0 flex items-center justify-center z-50 bg-opacity-70 bg-black">
       <div className=" rounded-md bg-[#18181B] flex flex-col" style={{height:'48vh',width:'36vw'}}>
-      <span className="material-symbols-outlined pr-4 text-white self-end p-2" onClick={console.log(stav)}>close</span>
+      <span className="material-symbols-outlined pr-4 text-white self-end p-2" onClick={event => isWorkOutOpen(false)}>close</span>
         <h1 className='text-white text-2xl p-1 ml-14 font-semibold'>Create Workout Plan</h1>
         
         <label className='text-white font-semibold ml-16 mb-3 mt-3'>Title</label>
@@ -44,7 +44,7 @@ export default function NewWorkoutPlanDialog(userId,stav){
         <label className='text-white font-semibold ml-16 mb-3 mt-5' >Description</label>
         <textarea  onChange={handleDescriptionChange} className='bg-[#18181B] border rounded-md  self-center text-white' placeholder='Description' style={{width:'80%', height:'20%'}}></textarea>
         <div className='flex grow w-full justify-end items-end gap-2'>
-        <button  className='mb-5 rounded-md text-white text-sm font-semibold bg-[#2f2f35] w-20 h-8' onClick={console.log(stav)}>Cancel</button>
+        <button  className='mb-5 rounded-md text-white text-sm font-semibold bg-[#2f2f35] w-20 h-8' onClick={event => isWorkOutOpen(false)}>Cancel</button>
         <button onClick={handleCreateWorkoutPlan} disabled={workoutPlanTitle.length < 3} className=' disabled:opacity-50 disabled:bg-[#2f2f35]   mb-5 mr-5 rounded-md text-white text-sm font-semibold bg-accent w-20 h-8'>Create</button>
         </div>
       </div>

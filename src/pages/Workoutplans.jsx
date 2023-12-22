@@ -4,6 +4,8 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { pink } from '@mui/material/colors';
 import Checkbox from '@mui/material/Checkbox';
+import "../styles/UtilStyles.css"
+
 
 
 
@@ -11,13 +13,190 @@ export default function WorkoutPlans() {
 
   const [userData, setUserData] = useState("user");
   const [workoutPlans, setWorkoutPlans] = useState([]);
-  const [exerciseHistory,setExerciseHistory] = useState([])
+  const [userExerciseData,setUserExerciseData] = useState([])
 
   const [selectedWorkoutPlan, selectWorkoutPlan] = useState([]);
   const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
   const [openCreateDialog, setOpenCreateDialog] = useState(false);
   const [workoutPlanTitle, setWorkoutTitle] = useState("");
   const [workoutPlanDescription, setWorkoutDescription] = useState("");
+  const [changesPayload,updateChangesPayload] = useState([])
+  const [newDatasPayload,updateNewDataPayload] = useState([])
+  
+
+
+
+
+//userId,exerciseId,newWeight,newReps,newSets
+
+//loop trough and call this function n times
+// for( of changesPayload){
+//   async function handleApplyChanges(){
+//     try{
+//       response = await axios.post('http://localhost:5000/api/updateexercisedata',{
+//         userId:userData.id,
+//         exerciseId:changePayload.exerciseId,
+//         newWeight:changePayload.weight,
+//         newReps:changePayload.reps,
+//         newSets:changePayload.sets
+        
+//       })
+
+//     }catch(error){
+//       alert("There was error applying changes",error)
+//     }
+//   }
+// }
+
+
+function handleApplyChanges() {
+  console.log("Applied changes")
+  const changesArray = Object.values(changesPayload);
+  const newDataArray = Object.values(newDatasPayload)
+  
+  changesArray.forEach(async (changePayload) => {
+    console.log(changePayload)
+    })
+  newDataArray.forEach(async (newDataPayload)=>{
+    console.log(newDataPayload.weight)
+    if(newDataPayload.weight == undefined){alert("You must specify the weight when setting the data on exercise you havent done before..")}
+    if(newDataPayload.reps == undefined){alert("You must specify the reps when setting the data on exercise you havent done before..")}
+    if(newDataPayload.sets == undefined){alert("You must specify the sets when setting the data on exercise you havent done before..")}
+    else{
+      axios.post("http://localhost:5000/api/addexercisedata",{
+      userId:userData.id,
+      exerciseId:newDataPayload.exerciseId,
+      weight:parseFloat(newDataPayload.weight),
+      reps:parseInt(newDataPayload.reps),
+      sets:parseInt(newDataPayload.sets),
+    })}})}
+
+
+
+const handleNewReps = (exerciseId, e) => {
+  const newReps = e.target.value;
+  console.log(newReps)
+  
+  updateNewDataPayload((prevChangesPayload) => ({
+    ...prevChangesPayload,
+    [exerciseId]: {
+      ...prevChangesPayload[exerciseId],
+      reps: newReps,
+      exerciseId: exerciseId,
+
+    },
+  }));
+  console.log(newDatasPayload)
+};
+
+const handleNewSets = (exerciseId, e) => {
+  const newSets = e.target.value;
+  
+  updateNewDataPayload((prevChangesPayload) => ({
+    ...prevChangesPayload,
+    [exerciseId]: {
+      ...prevChangesPayload[exerciseId],
+      sets: newSets,
+      exerciseId: exerciseId,
+
+    },
+  }));
+  console.log(newDatasPayload)
+};
+
+const handleNewWeight = (exerciseId, e) => {
+  const newWeight = e.target.value;
+  
+  updateNewDataPayload((prevChangesPayload) => ({
+    ...prevChangesPayload,
+    [exerciseId]: {
+      ...prevChangesPayload[exerciseId],
+      weight: newWeight,
+      exerciseId: exerciseId,
+
+    },
+  }));
+  console.log(newDatasPayload)
+};
+
+
+const handleWeightChange = (selectedWorkoutPlan,exerciseId,e) => {
+  const newWeight = parseFloat(e.target.value);
+  updateChangesPayload((prevChangesPayload) => ({
+    ...prevChangesPayload,
+    [exerciseId]: {
+      ...prevChangesPayload[exerciseId],
+      weight: newWeight,
+      exerciseId: exerciseId,
+      
+    },
+  }));
+selectedWorkoutPlan.exercises.map((exercise,i)=>{if(exercise.id==exerciseId){
+  setUserExerciseData((prevUserExerciseData)=>({
+    ...prevUserExerciseData,
+    weight:newWeight
+  }))
+}})
+
+
+
+};
+
+const handleRepschange = (exerciseId, e) => {
+  const newReps = (e.target.value);
+  updateChangesPayload((prevChangesPayload) => ({
+    ...prevChangesPayload,
+    [exerciseId]: {
+      ...prevChangesPayload[exerciseId],
+      reps: newReps,
+      exerciseId: exerciseId,
+      
+    },
+  }));
+  setUserExerciseData((prevuserExerciseData) => {
+    const updatedHistory = prevuserExerciseData.map((exercise) => {
+      if (exercise.exerciseId === exerciseId) {
+        return {
+          ...exercise,
+          reps: newReps,
+          exerciseId: exerciseId,
+
+        };
+      }
+      return exercise;
+    });
+    return updatedHistory;
+  });
+  console.log(userExerciseData)
+};
+const handleSetschange = (exerciseId, e) => {
+  const newSets = (e.target.value)
+  updateChangesPayload((prevChangesPayload) => ({
+    ...prevChangesPayload,
+    [exerciseId]: {
+      ...prevChangesPayload[exerciseId],
+      sets: newSets,
+      exerciseId: exerciseId,
+      
+    },
+  }));
+  setUserExerciseData((prevuserExerciseData) => {
+    const updatedHistory = prevuserExerciseData.map((exercise) => {
+      if (exercise.exerciseId === exerciseId) {
+        return {
+          ...exercise,
+          sets: newSets,
+        };
+      }
+      return exercise;
+    });
+    return updatedHistory;
+  });
+  console.log(userExerciseData)
+};
+
+
+
 
   const handleTitleChange = (e) => {
     setWorkoutTitle(e.target.value);
@@ -54,7 +233,7 @@ export default function WorkoutPlans() {
       );
       setUserData(response.data.sessiondata.sess.user);
       setWorkoutPlans(response.data.exercisePlans);
-      setExerciseHistory(response.data.exerciseHistory)
+      setUserExerciseData(response.data.userExerciseData)
     } catch (error) {
       console.error("Error fetching logged in user data:", error);
     }
@@ -113,7 +292,7 @@ export default function WorkoutPlans() {
           </div>
         ) : (
           <div className="flex flex-col w-full h-full">
-            <div className="text-text w-full text-md flex gap-52 p-10">
+            <div className="text-text w-full text-md flex sm:gap-40 gap-52 p-10">
               <div>
                 <p className="ml-5 opacity-60">EST DURATION</p>
                 <p className="ml-5 text-3xl">25-30 mins</p>
@@ -131,41 +310,70 @@ export default function WorkoutPlans() {
                 <p className="ml-5 text-3xl">Private</p>
               </div>
             </div>
-            <div className=' gap-5 rounded-2xl bg-[#18181B] mt-40 ml-24' style={{height:"450px",width:"750px"}}>
+            <div className=' gap-5 rounded-2xl bg-[#18181B] sm:xh-96 sm:mt-20 sm:w-exerciseListContainer  sm:ml-10 mt-40 ml-24'>
             <div className='items-center flex flex-col mt-10'></div>
             {selectedWorkoutPlan.exercises.map((exercise, i) => {
+              if(exercise.userExerciseData.length == 0){
               return (
-                <div className=" align-middle border-white flex gap-1 bg-backgroundcolor w-5/6 h-10 mr-10 mt-5 ml-6 rounded-sm">
+                <div className=" align-middle border-white flex gap-1 bg-backgroundcolor w-6/7 h-10 mr-10 mt-5 ml-6 rounded-sm">
                   <Checkbox {...label} color="success" sx={{
                       color: "#18181B",
                       marginTop:"5px"
                      }}/>
-                  <p className="text-text text-xl self-center">{exercise.name}</p>
-                  {exerciseHistory.length == 0 && (
-                  <div className='flex '>
-                <input className='self-center bg-transparent text-text' placeholder='Weight' type='text'></input>
-                </div>
-                )}
-                  {exerciseHistory.map((exerciseH,i)=>{
-                    if(exerciseH.exerciseId == exercise.id){
-                      return(
-                        <div className='flex'>
-                     <p className=' text-text text-xl self-center'>{exerciseH.weight}</p><p className=' text-text text-xl self-center text-opacity-60'>kg</p>
-                     </div>
-                      )
-                    }
-                  else return(<div className='flex'>
-                    <input className=' self-center bg-transparent' placeholder='Weight' type='text'></input>
-                    <input className=' self-center bg-transparent' placeholder='Reps' type='text'></input>
-                    <input className=' self-center bg-transparent' placeholder='Sets' type='text'></input>
-                  </div>)
-                  })}
+                  <p className="text-text text-xl self-center w-60 ">{exercise.name}</p>
+                  <input type='number' className=' bg-transparent w-16' onChange={(e)=>{handleNewWeight(exercise.id,e)}}></input><p>kg</p>
                 </div>
               );
+                }
+                else{
+                  return(
+                    <div className=" align-middle border-white flex gap-1 bg-backgroundcolor w-6/7 h-10 mr-10 mt-5 ml-6 rounded-sm">
+                  <Checkbox {...label} color="success" sx={{
+                      color: "#18181B",
+                      marginTop:"5px"
+                     }}/>
+                  <p className="text-text text-xl self-center w-60 ">{exercise.name}</p>
+                  <input type='number' onChange={(e)=>{handleWeightChange(selectedWorkoutPlan,exercise.id,e)}} className=' bg-transparent w-14 text-text' value={exercise.userExerciseData[0].weight}></input><p className=' text-gray-700'>Kg</p>
+                  <input type='number' onChange={handleRepschange} className=' bg-transparent w-14 text-text' value={exercise.userExerciseData[0].reps}></input><p className=' text-gray-700'>Reps</p>
+                  <input type='number' onChange={handleSetschange} className=' bg-transparent w-14 text-text' value={exercise.userExerciseData[0].sets}></input><p className=' text-gray-700'>Sets</p>
+                     
+                </div>
+                  )
+                }
             })}
+              <div className='text-text'>
+                <div className=' flex justify-center mt-5 mb-5'>
+                <button><span className="material-symbols-outlined mt-3 text-text text-4xl">add</span></button>
+                </div>
+              </div>
             </div>
           </div>
+          
         )}
+        
+        {
+          Object.keys(changesPayload).length != 0 &&(
+          <div className='flex justify-end mr-28 mt-5'>
+          <button className='p-3 bg-accent text-text rounded-lg self' onClick={handleApplyChanges}>
+            Apply changes
+          </button>
+          </div>
+          )
+        }
+        {/* {
+          Object.keys(changesPayload).length != 0 &&(
+            <div className=' w-56 h-40  bg-[#1a1a1a] flex flex-col rounded-lg'>
+              <div>
+                <div className='flex'><span className="material-symbols-outlined mt-3 ml-5 text-yellow-500 text-4xl">report</span><p className=' text-text text-lg font-semibold mt-5 text-center'>Save Changes?</p></div>
+                <p className='text-white text-opacity-75 text-center'>Would you like to save your changes before exiting?</p>
+              </div>
+              <div className='flex align-middle content-between justify-evenly gap-2  '>
+                <button className=' relative text-text text-base rounded-lg w-1/2 font-semibold bg-gray-800 ml-2' onClick={()=>{}}>Discard</button>
+                <button className=' relative text-text text-base rounded-lg w-1/2 font-bold bg-accent mr-2 p-3 text-center self-center items-center justify-center' onClick={()=>{}}>Save</button>
+              </div>
+            </div>
+          )
+        } */}
         {openCreateDialog && (
           <div className="fixed inset-0 flex items-center justify-center z-50 bg-opacity-70 bg-black">
             <div
@@ -219,6 +427,7 @@ export default function WorkoutPlans() {
           </div>
         )}
       </main>
+    
     </div>
   );
 }

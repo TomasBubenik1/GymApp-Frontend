@@ -168,6 +168,7 @@ export default function ExercisePage(){
 
         })
         console.log(response)
+        setOpenCategory(false)
       }catch(error){
         console.error('Error while creating workout plan',error)
       }
@@ -200,8 +201,9 @@ export default function ExercisePage(){
   <Navbar currentSite={"exercises"}/>
   <main className='flex-grow ml-5 bg-backgroundcolor'>
     <nav className='w-full h-20 flex justify-between items-center bg-white bg-opacity-10 rounded-2xl'>
-      <div className='flex items-center'>
+      <div className='flex w-full'>
         <h1 className='text-3xl text-text font-bold ml-5'>Exercises</h1>
+        <span className="material-symbols-outlined pr-4 text-4xl self-end text-end text-accent justify-end align-middle items-end">account_circle</span>
       </div>
       
     </nav>

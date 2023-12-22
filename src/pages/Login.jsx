@@ -33,7 +33,7 @@ export default function Login(){
     return(
       <main style={{display:"flex"}}>
             <div className='bg-gray-800 flex flex-col justify-center' style={{width:"100vw",height:'100vh'}}>
-          <div className='w-full bg-gray-900 p-8 px-8 mx-auto rounded-3xl' style={{height:'50%',width:'40%'}}>
+          <div className='w-full bg-gray-900 p-8 px-8 mx-auto rounded-3xl' style={{height:'55%',width:'40%'}}>
             <h2 className='text-5xl text-green-600 font-semibold'>Sign in</h2>
             <div className='flex flex-col text-gray-400 py-2 mt-3'>
               <label className='flex'>Email</label>

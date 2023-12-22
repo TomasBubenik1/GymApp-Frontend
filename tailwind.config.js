@@ -5,6 +5,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      width:{
+      exerciseListContainer:"650px"
+      },
       fontSize:{
         navIcons:'28px',
       },

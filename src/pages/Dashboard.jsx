@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Navbar from '../components/Navbar';
+import BarChartComponent from '../components/Charts/TotalWeightLifted';
+import SingleExerciseChart from '../components/Charts/TotalWeightLifted';
 
 const Dashboard = () => {
 
@@ -30,8 +32,6 @@ const Dashboard = () => {
     }
   };
   
-
- console.log(workoutPlans)
     return (
   <div className='flex bg-backgroundcolor w-full'>
     <Navbar currentSite={"dashboard"}/>
@@ -42,20 +42,7 @@ const Dashboard = () => {
       </div>
     </nav>
         <div>
-          {workoutPlans.map((workoutplan,index)=>{
-            return(
-           <div key={index}>
-              <div>
-              <p className='text-3xl'>{workoutplan.title}</p>
-              {workoutplan.exercises.map((exercise,index)=>{
-                return(<div key={index}>
-                  <p>{exercise.name}</p>
-                  </div>)
-              })}
-              </div>
-           </div>
-            )
-          })}
+          <SingleExerciseChart></SingleExerciseChart>
                     
         </div>
     </main>

@@ -160,7 +160,6 @@ export default function ExercisePage(){
 
     async function handleCreateWorkoutPlan(){
       try{
-        console.log("pressed")
         const response = await axios.post('http://localhost:5000/api/createworkoutplan',{
           title:workoutPlanTitle,
           description:workoutPlanDescription,
@@ -195,15 +194,18 @@ export default function ExercisePage(){
     }, [selectedOptions]);
 
   
-   
+  console.log(userData) 
     return(
       <div className='flex bg-backgroundcolor w-full'>
   <Navbar currentSite={"exercises"}/>
   <main className='flex-grow ml-5 bg-backgroundcolor'>
     <nav className='w-full h-20 flex justify-between items-center bg-white bg-opacity-10 rounded-2xl'>
-      <div className='flex w-full'>
-        <h1 className='text-3xl text-text font-bold ml-5'>Exercises</h1>
-        <span className="material-symbols-outlined pr-4 text-4xl self-end text-end text-accent justify-end align-middle items-end">account_circle</span>
+    <h1 className='text-3xl text-text font-bold ml-5'>Exercises</h1>
+      <div className='flex w-full justify-end'>
+        <div className='mr-5 p-2 pb-1 bg-backgroundcolor rounded-xl flex'>
+          <img  src={`${userData.profilepicture}?tr=w-30,h-30`} className=' rounded-md mb-1'></img>
+          <h1 className='text-text font-semibold mt-1 '>{userData.name}</h1>
+        </div>
       </div>
       
     </nav>

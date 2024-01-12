@@ -9,6 +9,7 @@ import ExercisesPage from './pages/ExercisePage'
 import Register from "./pages/Register";
 import ExerciseDetails from './pages/Details';
 import WorkoutPlans from './pages/Workoutplans';
+import SocialMain from './pages/Social/SocialMain';
 
 function App() {
   const [userData, setUserData] = useState(null);
@@ -24,6 +25,7 @@ function App() {
         <Route element={<PrivateRoute/>}>
             <Route path='dashboard' element={<Dashboard/>} exact></Route>
             <Route path='exercises' element={<ExercisesPage/>} exact></Route>
+            <Route path='social' element={<SocialMain/>} exact></Route>
             <Route path='details/:id' element={<ExerciseDetails/>} exact></Route>
             <Route path='workoutplans' element={<WorkoutPlans/>}exact></Route>
         </Route>

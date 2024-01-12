@@ -24,7 +24,7 @@ export default function Exercises({exercises,loading,workoutPlanId,userId}) {
   return (
     <div className='grid row-auto grid-cols-3 p-3 gap-5'>
       {exercises.map((exercise, index) => {
-const formattedName = exercise.name.replace(/[\s/()]/g, '_'); // Replace spaces, forward slashes, and parentheses
+const formattedName = exercise.name.replace(/[\s/()]+/g, '_').replace(/[_]+$/g, '').replace(/,/g, '');
 return (  
           <div key={index} className=' rounded-lg border border-accent border-opacity-20 p-2'>
             <div>

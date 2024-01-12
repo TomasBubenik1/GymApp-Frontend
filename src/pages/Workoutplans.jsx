@@ -6,6 +6,29 @@ import { pink } from '@mui/material/colors';
 import Checkbox from '@mui/material/Checkbox';
 import "../styles/UtilStyles.css"
 
+import React, { useState, useEffect } from 'react';
+
+function DataFetchingComponent() {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch('https://api.example.com/data');
+      const result = await response.json();
+      setData(result);
+    };
+
+    fetchData();
+  }, []); // Prázdnym poľom zabezpečíme, že useEffect sa spustí iba raz po načítaní komponentu.
+
+  return (
+    <div>
+      {data.map(item => (
+        <p key={item.id}>{item.name}</p>
+      ))}
+    </div>
+  );
+}
 
 
 
@@ -28,26 +51,6 @@ export default function WorkoutPlans() {
 
   var time = 0
 
-//userId,exerciseId,newWeight,newReps,newSets
-
-//loop trough and call this function n times
-// for( of changesPayload){
-//   async function handleApplyChanges(){
-//     try{
-//       response = await axios.post('http://localhost:5000/api/updateexercisedata',{
-//         userId:userData.id,
-//         exerciseId:changePayload.exerciseId,
-//         newWeight:changePayload.weight,
-//         newReps:changePayload.reps,
-//         newSets:changePayload.sets
-        
-//       })
-
-//     }catch(error){
-//       alert("There was error applying changes",error)
-//     }
-//   }
-// }
 
 
 function handleApplyChanges() {

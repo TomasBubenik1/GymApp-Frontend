@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 export default function Pagination({ exercisesPerPage, totalExercises }) {
   const [currentPage, setCurrentPage] = useState(1);
-  const pagesToShow = 10; // Number of pagination links to show
+  const pagesToShow = 10; 
   const totalPages = Math.ceil(totalExercises / exercisesPerPage);
 
   const getVisiblePageNumbers = () => {

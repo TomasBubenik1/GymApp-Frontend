@@ -5,30 +5,8 @@ import { useState, useEffect } from "react";
 import { pink } from '@mui/material/colors';
 import Checkbox from '@mui/material/Checkbox';
 import "../styles/UtilStyles.css"
+import { Avatar } from '@mui/joy';
 
-import React, { useState, useEffect } from 'react';
-
-function DataFetchingComponent() {
-  const [data, setData] = useState([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await fetch('https://api.example.com/data');
-      const result = await response.json();
-      setData(result);
-    };
-
-    fetchData();
-  }, []); // Prázdnym poľom zabezpečíme, že useEffect sa spustí iba raz po načítaní komponentu.
-
-  return (
-    <div>
-      {data.map(item => (
-        <p key={item.id}>{item.name}</p>
-      ))}
-    </div>
-  );
-}
 
 
 
@@ -299,24 +277,26 @@ const handleSetsChange = (exerciseId, e) => {
   return (
     <div className="flex bg-backgroundcolor w-full">
       <Navbar currentSite={"workoutplans"} />
-      <main className="flex-grow ml-5 bg-backgroundcolor h-full">
-        <nav className="w-full h-20 flex justify-between items-center bg-white bg-opacity-10 rounded-2xl">
-          <div className="flex items-center">
-            <h1 className="text-3xl text-text font-bold ml-5">
-              {Object.keys(selectedWorkoutPlan).length > 0 ? (
-                <p className="text-text text-3xl">
-                  {" "}
-                  {selectedWorkoutPlan.title}
-                  <span className="material-symbols-outlined pr-4">
+      <main className="flex-grow bg-backgroundcolor h-full">
+      <nav className='w-full h-20 flex justify-between items-center bg-backgroundcolor border-b border-gray-700'>
+        {Object.keys(selectedWorkoutPlan).length>1 ? <div className='text-text'>
+          <div className='flex flex-row'>
+          <h1 className='text-text text-3xl ml-5 font-bold'>{selectedWorkoutPlan.title}</h1>
+          <span className="material-symbols-outlined pr-4 text-white mt-2 ml-1">
                     expand_more
                   </span>
-                </p>
-              ) : (
-                <p>Select your workout plan.</p>
-              )}
-            </h1>
+                  </div>
+        </div>:<div className='text-text text-3xl ml-5 font-bold'>Select your workout plan:</div>}
+        <div className="">
+            <div className="mr-5 p-2 pb-1 bg-backgroundcolor rounded-xl flex border border-gray-700 pt-1 pr-1 pl-5">
+              <Avatar style={{width:"30px",height:"28px",marginTop:"2px"}} variant='outlined' src={`${userData.profilepicture}?tr=w-30,h-30`} >TB</Avatar>
+              <h1 className="text-text font-semibold mt-1 ml-2 ">{userData.name}</h1>
+              <span className="material-symbols-outlined pr-4 text-white mt-2 ml-1">
+                    expand_more
+                  </span>
+            </div>
           </div>
-        </nav>
+    </nav>
         {selectedWorkoutPlan.length == 0 ? (
           <div className="flex flex-col w-full items-center justify-center h-full">
             <p className="text-text text-3xl font-semibold h-3">
@@ -425,7 +405,7 @@ const handleSetsChange = (exerciseId, e) => {
                 <p className='text-white text-opacity-75 text-center'>Would you like to save your changes before exiting?</p>
               </div>
               <div className='flex align-middle content-between justify-evenly gap-2  '>
-                <button className=' relative text-text text-base rounded-lg w-1/2 font-semibold bg-gray-800 ml-2' onClick={()=>{}}>Discard</button>
+                <button className=' relative text-text text-base rounded-lg w-1/2 font-semibold bg-gray-700 ml-2' onClick={()=>{}}>Discard</button>
                 <button className=' relative text-text text-base rounded-lg w-1/2 font-bold bg-accent mr-2 p-3 text-center self-center items-center justify-center' onClick={()=>{}}>Save</button>
               </div>
             </div>

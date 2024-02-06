@@ -9,6 +9,9 @@ import {
   Legend,
   Text,
 } from "recharts";
+import { LineChart, Line, ResponsiveContainer } from 'recharts';
+
+
 import { useState } from "react";
 import { format } from "date-fns";
 import axios from "axios";
@@ -17,6 +20,7 @@ function SingleExerciseChart() {
   const [exerciseData, setExerciseData] = useState([]);
   const [latestEditedExerciseId, setLatestEditedExerciseId] = useState(null);
   const [latestEditedExerciseName,setLatestEditedExerciseName] = useState("no latest edited exercise")
+  const [latestEditedExercise,setLatestEditedExercisee] = useState([])
   async function getLatestExercise() {
     const response = await axios.get(
       "http://localhost:5000/api/getlatesteditedexercise",
@@ -24,8 +28,10 @@ function SingleExerciseChart() {
         withCredentials: true,
       }
     );
-    setLatestEditedExerciseId(response.data.latestExerciseId.exerciseId);
-    setLatestEditedExerciseName(response.data.latestExerciseId.exercise.name);
+    console.log("Laetst Exercise:",response.data)
+
+      setLatestEditedExerciseId(response.data.latestExerciseId.exerciseId);
+      setLatestEditedExerciseName(response.data.latestExerciseId.exercise.name)
 
   }
 
@@ -74,11 +80,12 @@ function SingleExerciseChart() {
 
   const chartData = [ ...historyEntries,latestEntry];
 
- console.log(exerciseData.historyExerciseData)
+ console.log(exerciseData)
   return (
-    <div className="border-2 inline-block rounded-xl p-4 shadow-md">
-    <p className='text-text text-3xl'>{latestEditedExerciseName}</p>
-      <BarChart width={400} height={300} data={chartData}>
+    <div className=" inline-block rounded-xl p-7 shadow-md bg-forground mt-5">
+    <p className='text-text font-semibold mb-3 text-lg'>Recent Exercise</p>
+    <p className='text-text text-3xl font-semibold'>{latestEditedExerciseName}</p>
+      <BarChart width={400} height={200} data={chartData}>
         <XAxis dataKey="name" />
         <Tooltip
           formatter={(value, name, entry) => {

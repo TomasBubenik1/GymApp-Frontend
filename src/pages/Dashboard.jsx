@@ -43,6 +43,7 @@ function Dashboard() {
           </div>
         </nav>
         <div className="ml-5"></div>
+        <SingleExerciseChart></SingleExerciseChart>
       </main>
     </div>
   );

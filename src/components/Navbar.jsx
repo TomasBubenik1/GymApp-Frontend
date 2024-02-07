@@ -44,26 +44,6 @@ function Navbar(currentSite) {
             Dashboard
           </Link>
         )}
-        <Link
-          className="rounded-lg p-2 flex w-full  text-text transition duration-150 ease-in hover:shadow-2xl hover:bg-accent hover:bg-opacity-25"
-          to={"/exercises"}
-          title="dashboard"
-        >
-          <span className="mr-3 material-symbols-outlined text-navIcons text-text transition duration-150 ease-in hover:shadow-2xl hover:bg-accent hover:bg-opacity-25">
-            analytics
-          </span>
-          Analytics
-        </Link>
-        <Link
-          className="rounded-lg p-2 flex w-full  text-text transition duration-150 ease-in hover:shadow-2xl hover:bg-accent hover:bg-opacity-25"
-          to={"/exercises"}
-          title="dashboard"
-        >
-          <span className="mr-3 material-symbols-outlined text-navIcons text-text transition duration-150 ease-in hover:shadow-2xl hover:bg-accent hover:bg-opacity-25">
-            calendar_today
-          </span>
-          Schedule
-        </Link>
         {currentSite.currentSite == "social" ? (
           <Link
             className="bg-accent w-full p-2 bg-opacity-20 rounded-lg flex  text-accent transition duration-150 ease-in hover:shadow-2xl hover:bg-accent hover:bg-opacity-25"

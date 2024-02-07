@@ -29,7 +29,7 @@ function App() {
           <Route path="social" element={<SocialMain />} exact></Route>
           <Route path="details/:id" element={<ExerciseDetails />} exact></Route>
           <Route path="workoutplans" element={<WorkoutPlans />} exact></Route>
-          <Route path="profile/:name" element={<ProfilePage />} exact></Route>
+          <Route path="profile/:username" element={<ProfilePage />} exact></Route>
         </Route>
         <Route path="login" element={<Login />}></Route>
         <Route path="register" element={<Register />}></Route>

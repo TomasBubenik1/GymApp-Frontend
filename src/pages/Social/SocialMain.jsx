@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Navbar from "../../components/Navbar";
+import { Link } from "react-router-dom";
 import { Avatar } from "@mui/joy";
 import ProfileBox from "../../components/ProfileBox";
 
@@ -73,6 +74,7 @@ function SocialMain() {
             <ProfileBox
               nickname={userData.nickname}
               profilepic={userData.profilepicture}
+              username={userData.username}
             ></ProfileBox>
           </div>
         </nav>
@@ -143,11 +145,13 @@ function SocialMain() {
           return (
             <div className="w-l border-gray-800 border p-3">
               <div className="flex flex-row text-white text-xl">
-                <Avatar
-                  style={{ width: "50px", height: "48px", marginTop: "2px" }}
-                  variant=""
-                  src={`${post.createdBy.profilepicture}?tr=w-30,h-30`}
-                ></Avatar>
+                <Link to={`../${post.createdBy.username}`}>
+                  <Avatar
+                    style={{ width: "50px", height: "48px", marginTop: "2px" }}
+                    variant=""
+                    src={`${post.createdBy.profilepicture}?tr=w-30,h-30`}
+                  ></Avatar>
+                </Link>
                 <div className="flex flex-row">
                   <p className=" mt-2 font-bold">{post.createdBy.nickname}</p>
                   <p className=" mt-2 ml-2 opacity-30">

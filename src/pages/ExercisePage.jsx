@@ -225,6 +225,7 @@ export default function ExercisePage() {
             <ProfileBox
               nickname={userData.nickname}
               profilepic={userData.profilepicture}
+              username={userData.username}
             ></ProfileBox>
           </div>
         </nav>

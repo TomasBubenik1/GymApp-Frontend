@@ -39,6 +39,7 @@ function Dashboard() {
             <ProfileBox
               nickname={userData.nickname}
               profilepic={userData.profilepicture}
+              username={userData.username}
             ></ProfileBox>
           </div>
         </nav>

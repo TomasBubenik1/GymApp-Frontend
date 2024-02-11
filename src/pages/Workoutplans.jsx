@@ -20,6 +20,73 @@ export default function WorkoutPlans() {
   const [changesPayload, updateChangesPayload] = useState([]);
   const [newDatasPayload, updateNewDataPayload] = useState([]);
   const [estimatedLenght, setEstimatedLenght] = useState(0);
+  const [muscleGroupPercentages, setMuscleGroupPercentages] = useState({
+    lowerBody: 0,
+    upperBody: 0,
+    core: 0,
+  });
+
+  function calculateMuscleGroupPercentages() {
+    var lowerBodyCount = 0;
+    var upperBodyCount = 0;
+    var coreCount = 0;
+    var totalExercises = selectedWorkoutPlan.exercises.length;
+
+    const lowerBodyMuscles = [
+      "quadriceps",
+      "hamstrings",
+      "calves",
+      "glutes",
+      "abductors",
+      "adductors",
+    ];
+    const upperBodyMuscles = [
+      "biceps",
+      "triceps",
+      "chest",
+      "lats",
+      "shoulders",
+      "traps",
+      "forearms",
+      "middle back",
+    ];
+    const coreMuscles = ["abdominals", "lower back", "neck"];
+
+    selectedWorkoutPlan.exercises.forEach((exercise) => {
+      if (
+        exercise.primaryMuscles.some((muscle) =>
+          lowerBodyMuscles.includes(muscle)
+        )
+      ) {
+        lowerBodyCount += 1;
+      } else if (
+        exercise.primaryMuscles.some((muscle) =>
+          upperBodyMuscles.includes(muscle)
+        )
+      ) {
+        upperBodyCount += 1;
+      } else if (
+        exercise.primaryMuscles.some((muscle) => coreMuscles.includes(muscle))
+      ) {
+        coreCount += 1;
+      }
+    });
+
+    setMuscleGroupPercentages({
+      lowerBody: Math.round((lowerBodyCount / totalExercises) * 100),
+      upperBody: Math.round((upperBodyCount / totalExercises) * 100),
+      core: Math.round((coreCount / totalExercises) * 100),
+    });
+  }
+
+  useEffect(() => {
+    if (
+      selectedWorkoutPlan.exercises &&
+      selectedWorkoutPlan.exercises.length > 0
+    ) {
+      calculateMuscleGroupPercentages();
+    }
+  }, [selectedWorkoutPlan]);
   const navigate = useNavigate();
 
   function onAddClick() {
@@ -85,10 +152,15 @@ export default function WorkoutPlans() {
   }
 
   function CalculateDuration() {
-    selectedWorkoutPlan.exercises.map((exercise, i) => {
-      if (exercise.userExerciseData.length > 0) {
-        var cas = exercise.userExerciseData[0].sets * 5;
-        time += cas;
+    time = 0;
+    selectedWorkoutPlan.exercises.forEach((exercise) => {
+      if (
+        exercise.userExerciseData.length > 0 &&
+        !isNaN(exercise.userExerciseData[0].sets)
+      ) {
+        var sets = parseInt(exercise.userExerciseData[0].sets, 10) || 0;
+        var durationPerSet = 5;
+        time += sets * durationPerSet;
       }
     });
     setEstimatedLenght(time);
@@ -309,6 +381,7 @@ export default function WorkoutPlans() {
             <ProfileBox
               nickname={userData.nickname}
               profilepic={userData.profilepicture}
+              username={userData.username}
             ></ProfileBox>
           </div>
         </nav>
@@ -360,12 +433,73 @@ export default function WorkoutPlans() {
                 <p className="ml-5 text-3xl">Private</p>
               </div>
             </div>
-            <div className=" gap-5 rounded-2xl bg-[#18181B] sm:xh-96 sm:mt-20 sm:w-exerciseListContainer  sm:ml-10 mt-40 ml-24">
+            <div
+              className="flex flex-row h-1 gap-1 ml-16 font-semibold "
+              style={{ maxWidth: "800px" }}
+            >
+              {muscleGroupPercentages.lowerBody > 0 && (
+                <div
+                  className="flex flex-col"
+                  style={{
+                    width: `${muscleGroupPercentages.lowerBody}%`,
+                    backgroundColor: "#976333",
+                  }}
+                >
+                  <p
+                    className="mt-2"
+                    style={{ color: "#976333", fontSize: "15px" }}
+                  >
+                    LOWER BODY
+                  </p>
+                  <p className="text-text text-xl mt-1">
+                    {muscleGroupPercentages.lowerBody}%
+                  </p>
+                </div>
+              )}
+              {muscleGroupPercentages.upperBody > 0 && (
+                <div
+                  className="flex flex-col"
+                  style={{
+                    width: `${muscleGroupPercentages.upperBody}%`,
+                    backgroundColor: "#899733",
+                  }}
+                >
+                  <p
+                    className="mt-2"
+                    style={{ color: "#899733", fontSize: "15px" }}
+                  >
+                    UPPER BODY
+                  </p>
+                  <p className="text-text text-xl mt-1">
+                    {muscleGroupPercentages.upperBody}%
+                  </p>
+                </div>
+              )}
+              {muscleGroupPercentages.core > 0 && (
+                <div
+                  style={{
+                    width: `${muscleGroupPercentages.core}%`,
+                    backgroundColor: "#42B6CF",
+                  }}
+                >
+                  <p
+                    className="mt-2"
+                    style={{ color: "#42B6CF", fontSize: "15px" }}
+                  >
+                    CORE
+                  </p>
+                  <p className="text-text text-xl mt-1">
+                    {muscleGroupPercentages.core}%
+                  </p>
+                </div>
+              )}
+            </div>
+            <div className=" gap-5 rounded-xl bg-[#18181B] sm:xh-96 sm:mt-36 sm:w-exerciseListContainer  sm:ml-10 mt-40 ml-24">
               <div className="items-center flex flex-col mt-10"></div>
               {selectedWorkoutPlan.exercises.map((exercise, i) => {
                 if (exercise.userExerciseData.length == 0) {
                   return (
-                    <div className=" align-middle border-white flex gap-1 bg-backgroundcolor w-6/7 h-10 mr-10 mt-5 ml-6 rounded-sm">
+                    <div className=" align-middle border-white flex gap-1 bg-backgroundcolor w-6/7 h-12 mr-10 mt-5 ml-6 rounded-md">
                       <Checkbox
                         {...label}
                         color="success"
@@ -395,6 +529,7 @@ export default function WorkoutPlans() {
                       <p className="text-text">Reps</p>
                       <input
                         type="number"
+                        max={30}
                         className=" bg-transparent w-16 text-text"
                         onChange={(e) => {
                           handleNewSets(exercise.id, e);
@@ -405,7 +540,7 @@ export default function WorkoutPlans() {
                   );
                 } else {
                   return (
-                    <div className=" align-middle border-white flex gap-1 bg-backgroundcolor w-6/7 h-10 mr-10 mt-5 ml-6 rounded-sm">
+                    <div className=" align-middle border-white flex gap-1 bg-backgroundcolor w-6/7 h-12 mr-10 mt-5 ml-6 rounded-md">
                       <Checkbox
                         {...label}
                         color="success"
@@ -437,6 +572,8 @@ export default function WorkoutPlans() {
                       <p className=" text-gray-700">Reps</p>
                       <input
                         type="number"
+                        max={30}
+                        min={3}
                         onChange={(e) => {
                           handleSetsChange(exercise.id, e);
                         }}

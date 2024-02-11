@@ -113,6 +113,29 @@ function Navbar(currentSite) {
             Exercises
           </Link>
         )}
+        {currentSite.currentSite == "notifications" ? (
+          <Link
+            className="bg-accent w-full p-2 bg-opacity-20 rounded-lg flex  text-accent transition duration-150 ease-in hover:shadow-2xl hover:bg-accent hover:bg-opacity-25"
+            to={"/exercises"}
+            title="dashboard"
+          >
+            <span className="mr-3 material-symbols-outlined text-navIcons text-accent transition duration-150 ease-in hover:shadow-2xl hover:bg-accent hover:bg-opacity-25">
+              notifications
+            </span>
+            Notifications
+          </Link>
+        ) : (
+          <Link
+            className="rounded-lg p-2 flex w-full  text-text transition duration-150 ease-in hover:shadow-2xl hover:bg-accent hover:bg-opacity-25"
+            to={"/exercises"}
+            title="dashboard"
+          >
+            <span className="mr-3 material-symbols-outlined text-navIcons text-text transition duration-150 ease-in hover:shadow-2xl hover:bg-accent hover:bg-opacity-25">
+              notifications
+            </span>
+            Notifications
+          </Link>
+        )}
       </div>
     </nav>
   );

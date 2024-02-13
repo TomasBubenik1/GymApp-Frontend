@@ -53,7 +53,7 @@ export default function ProfileBox({ nickname, profilepic, username }) {
         expand_more
       </span>
       {dropdownOpen && (
-        <div className="absolute bg-forground text-text mt-10 rounded-lg border border-gray-300 shadow-md">
+        <div className="absolute bg-forground z-50 text-text mt-10 rounded-lg border border-gray-300 shadow-md">
           <ul className="py-1">
             <Link to={`../${username}`}>
               <li className=" flex flex-row px-4 py-2 cursor-pointer hover:bg-accent hover:bg-opacity-50 hover:text-text">

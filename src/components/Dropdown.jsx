@@ -25,7 +25,10 @@ export default function DropdownMenuFilter({
           {options.map((option, i) => {
             if (selectedOption === option) {
               return (
-                <p className="font-semibold" onClick={() => onSelect(null)}>
+                <p
+                  className="font-semibold text-accent"
+                  onClick={() => onSelect(null)}
+                >
                   {option}
                 </p>
               );

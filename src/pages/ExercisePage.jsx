@@ -311,6 +311,19 @@ export default function ExercisePage() {
                 {openWorkoutPlans && (
                   <div className="mt-6 w-full text-white bg-[#1a1a1a] relative rounded-md p-2 justify-center flex flex-col items-center">
                     {workoutPlans.map((workoutplan, i) => {
+                      if (workoutplan.title == selectedWorkoutPlan) {
+                        return (
+                          <div
+                            className=" text-accent font-semibold"
+                            key={i}
+                            onClick={() => (
+                              selectWorkoutPlan(null), selectWorkoutPlanId(null)
+                            )}
+                          >
+                            {workoutplan.title}
+                          </div>
+                        );
+                      }
                       return (
                         <div
                           className=""

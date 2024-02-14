@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 export default function Pagination({ exercisesPerPage, totalExercises }) {
   const [currentPage, setCurrentPage] = useState(1);
-  const pagesToShow = 10; 
+  const pagesToShow = 10;
   const totalPages = Math.ceil(totalExercises / exercisesPerPage);
 
   const getVisiblePageNumbers = () => {
@@ -17,7 +17,10 @@ export default function Pagination({ exercisesPerPage, totalExercises }) {
       startPage = endPage - pagesToShow + 1;
     }
 
-    return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
+    return Array.from(
+      { length: endPage - startPage + 1 },
+      (_, i) => startPage + i
+    );
   };
 
   const visiblePageNumbers = getVisiblePageNumbers();

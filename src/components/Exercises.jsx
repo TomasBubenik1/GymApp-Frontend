@@ -1,6 +1,10 @@
 import axios from "axios";
 import React from "react";
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
+import AlertTitle from "@mui/material/AlertTitle";
 
 export default function Exercises({
   exercises,
@@ -8,23 +12,78 @@ export default function Exercises({
   workoutPlanId,
   userId,
 }) {
+  const [open, setOpen] = useState(false);
+  const [message, setMessage] = useState("");
+  const [type, setType] = useState("info");
+  const [popup, setPopup] = useState({
+    open: false,
+    message: "",
+    severity: "info", // Can be 'error', 'warning', 'info', 'success'
+    title: null,
+  });
+
+  const handleClose = () => {
+    setPopup({ ...popup, open: false });
+  };
+
+  function Popup({ open, handleClose, message, severity }) {
+    return (
+      <Snackbar
+        open={open}
+        autoHideDuration={2000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      >
+        <MuiAlert
+          variant="filled"
+          onClose={handleClose}
+          severity={severity}
+          sx={{ width: "100%" }}
+        >
+          {message}
+        </MuiAlert>
+      </Snackbar>
+    );
+  }
+
   if (loading) {
     return <h2>Loading</h2>;
   }
   async function handleAddIntoExercisePlan(exerciseID) {
     if (!workoutPlanId) {
-      return alert("You must select workout plan in order to add exercise!");
+      setPopup({
+        open: true,
+        message: "You must select a workout plan in order to add an exercise!",
+        severity: "error",
+      });
+      return;
     }
-
-    const response = await axios.post(
-      "http://localhost:5000/api/addexerciseintoplan",
-      {
-        workoutPlanId: workoutPlanId,
-        exerciseId: exerciseID,
-        userId: userId,
-      }
-    );
-    alert(response.data.message);
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/addexerciseintoplan",
+        {
+          workoutPlanId: workoutPlanId,
+          exerciseId: exerciseID,
+          userId: userId,
+        },
+        { withCredentials: true }
+      );
+      setPopup({
+        open: true,
+        message: response.data.message || "Exercise added successfully!",
+        severity: "success",
+        title: "Success",
+      });
+    } catch (error) {
+      setPopup({
+        open: true,
+        message:
+          error.response?.data?.message ||
+          "An error occurred while adding the exercise.",
+        severity: "error",
+        title: "Error",
+      });
+    }
   }
 
   return (
@@ -37,7 +96,7 @@ export default function Exercises({
         return (
           <div
             key={index}
-            className=" rounded-lg border border-accent border-opacity-20 p-2"
+            className=" rounded-lg border border-accent border-opacity-20 p-2 w-[450px]"
           >
             <div>
               <img
@@ -55,7 +114,7 @@ export default function Exercises({
             </p>
             <div className="flex gap-3">
               <button
-                className="text-center font-semibold bg-[#18181B] p-2  self-center w-full rounded-md cursor-pointer text-text"
+                className="text-center font-semibold bg-accent bg-opacity-30 text-accentGlow p-2  self-center w-full rounded-md cursor-pointer"
                 onClick={() => handleAddIntoExercisePlan(exercise.id)}
               >
                 Add
@@ -67,6 +126,13 @@ export default function Exercises({
                 Details
               </Link>
             </div>
+            <Popup
+              open={popup.open}
+              handleClose={handleClose}
+              message={popup.message}
+              severity={popup.severity}
+              title={popup.title}
+            />
           </div>
         );
       })}

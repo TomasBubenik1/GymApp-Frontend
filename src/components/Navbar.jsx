@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import Cookies from "universal-cookie";
 
-function Navbar(currentSite) {
+function Navbar({ currentSite, username }) {
   async function Logout() {
     try {
       await axios
@@ -20,8 +20,8 @@ function Navbar(currentSite) {
       <a className="text-3xl font-bold text-accent mt-5 text-center">
         Muscle Tracker
       </a>
-      <div className="flex flex-col flex-grow-1 h-full justify-start items-start gap-1 mt-12">
-        {currentSite.currentSite == "dashboard" ? (
+      <div className="flex flex-col flex-grow-1 h-full justify-start items-start gap-2 mt-12">
+        {currentSite == "dashboard" ? (
           <Link
             className="bg-accent w-full p-2 bg-opacity-20 rounded-lg flex  text-accent transition duration-150 ease-in hover:shadow-2xl hover:bg-accent hover:bg-opacity-25"
             to={"/dashboard"}
@@ -44,7 +44,7 @@ function Navbar(currentSite) {
             Dashboard
           </Link>
         )}
-        {currentSite.currentSite == "social" ? (
+        {currentSite == "social" ? (
           <Link
             className="bg-accent w-full p-2 bg-opacity-20 rounded-lg flex  text-accent transition duration-150 ease-in hover:shadow-2xl hover:bg-accent hover:bg-opacity-25"
             to={"/social"}
@@ -67,10 +67,10 @@ function Navbar(currentSite) {
             Social
           </Link>
         )}
-        {currentSite.currentSite == "workoutplans" ? (
+        {currentSite == "workoutplans" ? (
           <Link
             className="bg-accent w-full p-2 bg-opacity-20 rounded-lg flex  text-accent transition duration-150 ease-in hover:shadow-2xl hover:bg-accent hover:bg-opacity-25"
-            to={"/workoutplans"}
+            to={"/workoutplanselection"}
             title="dashboard"
           >
             <span className="mr-3 material-symbols-outlined text-navIcons text-accent transition duration-150 ease-in hover:shadow-2xl hover:bg-accent hover:bg-opacity-25">
@@ -81,7 +81,7 @@ function Navbar(currentSite) {
         ) : (
           <Link
             className="rounded-lg p-2 flex  text-text transition duration-150 ease-in hover:shadow-2xl hover:bg-accent hover:bg-opacity-25"
-            to={"/workoutplans"}
+            to={"/workoutplanselection"}
             title="dashboard"
           >
             <span className="mr-3 material-symbols-outlined text-navIcons text-text transition duration-150 ease-in hover:shadow-2xl hover:bg-accent hover:bg-opacity-25">
@@ -90,7 +90,7 @@ function Navbar(currentSite) {
             Workout Plans
           </Link>
         )}
-        {currentSite.currentSite == "exercises" ? (
+        {currentSite == "exercises" ? (
           <Link
             className="bg-accent w-full p-2 bg-opacity-20 rounded-lg flex  text-accent transition duration-150 ease-in hover:shadow-2xl hover:bg-accent hover:bg-opacity-25"
             to={"/exercises"}
@@ -113,7 +113,7 @@ function Navbar(currentSite) {
             Exercises
           </Link>
         )}
-        {currentSite.currentSite == "notifications" ? (
+        {currentSite == "notifications" ? (
           <Link
             className="bg-accent w-full p-2 bg-opacity-20 rounded-lg flex  text-accent transition duration-150 ease-in hover:shadow-2xl hover:bg-accent hover:bg-opacity-25"
             to={"/exercises"}
@@ -134,6 +134,29 @@ function Navbar(currentSite) {
               notifications
             </span>
             Notifications
+          </Link>
+        )}
+        {currentSite == "profile" ? (
+          <Link
+            className="bg-accent w-full p-2 bg-opacity-20 rounded-lg flex  text-accent transition duration-150 ease-in hover:shadow-2xl hover:bg-accent hover:bg-opacity-25"
+            to={`../${username}`}
+            title="dashboard"
+          >
+            <span className="mr-3 material-symbols-outlined text-navIcons text-accent transition duration-150 ease-in hover:shadow-2xl hover:bg-accent hover:bg-opacity-25">
+              person
+            </span>
+            Profile
+          </Link>
+        ) : (
+          <Link
+            className="rounded-lg p-2 flex w-full  text-text transition duration-150 ease-in hover:shadow-2xl hover:bg-accent hover:bg-opacity-25"
+            to={`../${username}`}
+            title="dashboard"
+          >
+            <span className="mr-3 material-symbols-outlined text-navIcons text-text transition duration-150 ease-in hover:shadow-2xl hover:bg-accent hover:bg-opacity-25">
+              person
+            </span>
+            Profile
           </Link>
         )}
       </div>

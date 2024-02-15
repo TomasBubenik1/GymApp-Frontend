@@ -30,7 +30,7 @@ export default function ProfileSettings() {
   return (
     <div className="flex flex-col">
       <div className="flex bg-backgroundcolor w-full">
-        <Navbar currentSite={"dashboard"} />
+        <Navbar currentSite={"dashboard"} username={userData?.username} />
         <div className=" grow flex flex-col">
           <nav className="w-full h-20 flex justify-between items-center bg-backgroundcolor border-b border-gray-700">
             <h1 className="text-3xl text-text font-bold ml-5">Dashboard</h1>
@@ -55,7 +55,7 @@ export default function ProfileSettings() {
                     type="text"
                     id="name"
                     placeholder="Your username"
-                    className="bg-forground text-white block w-full border-gray-700 rounded-lg border  p-2"
+                    className="bg-foreground text-white block w-full border-gray-700 rounded-lg border  p-2"
                   />
                   <p className="mt-1 text-sm">
                     Username must be unique and can't contain any special
@@ -90,7 +90,7 @@ export default function ProfileSettings() {
                   type="text"
                   id="nickname"
                   placeholder="Your nickname"
-                  className="bg-forground text-white block w-full border-gray-700 rounded-lg border  p-2"
+                  className="bg-foreground text-white block w-full border-gray-700 rounded-lg border  p-2"
                 />
               </div>
 
@@ -105,7 +105,7 @@ export default function ProfileSettings() {
                   type="text"
                   id="real name"
                   placeholder="Your real name"
-                  className="bg-forground text-white block w-full border-gray-700 rounded-lg border  p-2"
+                  className="bg-foreground text-white block w-full border-gray-700 rounded-lg border  p-2"
                 />
               </div>
 
@@ -116,7 +116,7 @@ export default function ProfileSettings() {
                 <textarea
                   id="bio"
                   placeholder="Tell us a little bit about yourself"
-                  className="bg-forground text-white block w-full border-gray-700 rounded-lg border p-2 resize-none"
+                  className="bg-foreground text-white block w-full border-gray-700 rounded-lg border p-2 resize-none"
                   rows="4"
                 ></textarea>
               </div>

@@ -87,7 +87,7 @@ export default function Exercises({
   }
 
   return (
-    <div className="grid row-auto grid-cols-3 p-3 gap-5">
+    <div className="grid row-auto xl:grid-cols-3 lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 p-3 gap-5">
       {exercises.map((exercise, index) => {
         const formattedName = exercise.name
           .replace(/[\s/()]+/g, "_")
@@ -96,12 +96,13 @@ export default function Exercises({
         return (
           <div
             key={index}
-            className=" rounded-lg border border-accent border-opacity-20 p-2 w-[450px]"
+            className="rounded-lg border border-accent border-opacity-20 p-2"
+            style={{ width: "100%", maxWidth: "300px" }}
           >
             <div>
               <img
-                className=" rounded-lg rounded-b-none aspect-square"
-                style={{ width: "100%", height: "250px" }}
+                className="rounded-lg rounded-b-none aspect-square"
+                style={{ width: "100%", height: "auto", maxHeight: "200px" }} // Ensure image scales down and maintains aspect ratio
                 src={`https://ik.imagekit.io/bubenik/exercises/${formattedName}/1.jpg`}
                 alt={exercise.name}
               />
@@ -113,26 +114,16 @@ export default function Exercises({
               {exercise.level.charAt(0).toUpperCase() + exercise.level.slice(1)}
             </p>
             <div className="flex gap-3">
-              <button
-                className="text-center font-semibold bg-accent bg-opacity-30 text-accentGlow p-2  self-center w-full rounded-md cursor-pointer"
-                onClick={() => handleAddIntoExercisePlan(exercise.id)}
-              >
+              <button className="text-center font-semibold bg-accent bg-opacity-30 text-accentGlow hover:bg-accentGlow hover:bg-opacity-40 p-2 self-center w-full rounded-md cursor-pointer">
                 Add
               </button>
               <Link
-                className="text-center font-semibold bg-[#18181B] p-2  self-center w-full rounded-md text-text "
+                className="text-center font-semibold bg-[#18181B] p-2 self-center w-full rounded-md text-text hover:bg-foregroundhover"
                 to={`/details/${exercise.id}`}
               >
                 Details
               </Link>
             </div>
-            <Popup
-              open={popup.open}
-              handleClose={handleClose}
-              message={popup.message}
-              severity={popup.severity}
-              title={popup.title}
-            />
           </div>
         );
       })}

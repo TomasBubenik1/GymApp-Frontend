@@ -12,6 +12,8 @@ import { handleToggleLike } from "../../utils/handleToggleLike";
 function SocialMain() {
   const [userData, setUserData] = useState([]);
   const [workoutPlans, setWorkoutPlans] = useState([]);
+  const [searchText, setSearchText] = useState("");
+  const [searchUsers, setSearchUsers] = useState([]);
   const [postText, setPostText] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
   const [posts, setAllPosts] = useState([]);
@@ -22,6 +24,9 @@ function SocialMain() {
     console.log(posts);
   }, []);
 
+  useEffect(() => {
+    handleUserSearch();
+  }, [searchText]);
   function handlePostTextChange(e) {
     setPostText(e.target.value);
   }
@@ -71,8 +76,19 @@ function SocialMain() {
       console.error("Error fetching logged in user data:", error);
     }
   }
-  function handleRed() {
-    console.log("kokot");
+
+  function handleSearchTextChange(e) {
+    setSearchText(e.target.value);
+  }
+  async function handleUserSearch() {
+    const res = await axios.post(
+      "http://localhost:5000/api/searchusers",
+      {
+        searchText: searchText,
+      },
+      { withCredentials: true }
+    );
+    console.log(res);
   }
   const handlePostClick = (e, postId) => {
     if (e.target.matches(".no-redirect") || e.target.closest(".no-redirect")) {
@@ -92,7 +108,8 @@ function SocialMain() {
             <h1 className="text-3xl text-text font-bold ml-5">Social</h1>
             <div className="flex flex-row gap-2">
               <input
-                className=" bg-foreground rounded-lg p-1"
+                onChange={(e) => handleSearchTextChange(e)}
+                className=" bg-foreground rounded-lg p-1 text-text"
                 placeholder="Search for your friends!"
               ></input>
               <ProfileBox
@@ -102,7 +119,7 @@ function SocialMain() {
               ></ProfileBox>
             </div>
           </nav>
-          <div className=' flex flex-col justify-center align-middle items-center'>
+          <div className=" flex flex-col justify-center align-middle items-center">
             <div className="w-l min-h-48 flex h-fit flex-col justify-between border-gray-700 border-b p-5">
               <div className=" flex flex-row w-full">
                 <Avatar

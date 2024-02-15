@@ -64,7 +64,9 @@ export default function ExerciseDetails() {
             src={`https://ik.imagekit.io/bubenik/exercises/${formattedName}/1.jpg`}
             alt={exerciseData.name}
           />
-          <p className='text-text text-2xl max-w-[1000px]'>{exerciseData.instructions}</p>
+          <p className="text-text text-[1rem] max-w-[50vw]">
+            {exerciseData.instructions}
+          </p>
         </div>
       </main>
     </div>

@@ -10,7 +10,7 @@ export default function DropdownMenuFilter({
 
   return (
     <button
-      className="flex flex-col w-full h-full rounded-md bg-foreground"
+      className="flex flex-col w-full h-full rounded-md bg-white bg-opacity-10"
       onClick={() => setIsOpen(!isOpen)}
     >
       <label className="text-base text-gray-400 ml-6 font-semibold mt-3 self-start">
@@ -21,23 +21,17 @@ export default function DropdownMenuFilter({
         <span className="material-symbols-outlined pr-4">expand_more</span>
       </div>
       {isOpen && (
-        <button className="mt-6 w-full text-white bg-foreground relative rounded-md justify-center flex flex-col items-center">
+        <button className="mt-6 w-full text-white bg-[#1a1a1a] relative rounded-md p-2 justify-center flex flex-col items-center">
           {options.map((option, i) => {
             if (selectedOption === option) {
               return (
-                <p
-                  className="font-semibold text-accent"
-                  onClick={() => onSelect(null)}
-                >
+                <p className="font-semibold" onClick={() => onSelect(null)}>
                   {option}
                 </p>
               );
             } else {
               return (
-                <p
-                  className="hover:bg-foregroundhover transition duration-300 w-full"
-                  onClick={() => onSelect(option)}
-                >
+                <p className="" onClick={() => onSelect(option)}>
                   {option}
                 </p>
               );

@@ -16,7 +16,7 @@ function Navbar({ currentSite, username }) {
   const cookies = new Cookies();
 
   return (
-    <nav className=" w-mL h-screen sticky top-0 bg-backgroundcolor h-f flex flex-col items-center text text-2xl border-r border-gray-700">
+    <nav className=" lg:w-[300px] 2xl:w-[500px] h-screen sticky top-0 bg-backgroundcolor h-f flex flex-col items-center text text-2xl border-r border-gray-700">
       <a className="text-3xl font-bold text-accent mt-5 text-center">
         Muscle Tracker
       </a>

@@ -87,7 +87,7 @@ export default function Exercises({
   }
 
   return (
-    <div className="grid row-auto xl:grid-cols-3 lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 p-3 gap-5">
+    <div className="grid row-auto xl:grid-cols-3 lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 p-3 gap-5 ">
       {exercises.map((exercise, index) => {
         const formattedName = exercise.name
           .replace(/[\s/()]+/g, "_")
@@ -97,7 +97,6 @@ export default function Exercises({
           <div
             key={index}
             className="rounded-lg border border-accent border-opacity-20 p-2"
-            style={{ width: "100%", maxWidth: "300px" }}
           >
             <div>
               <img

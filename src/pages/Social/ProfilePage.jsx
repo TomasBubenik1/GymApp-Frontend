@@ -230,7 +230,7 @@ export default function ProfilePage() {
                         <p>{post.content}</p>
                         {post.image && (
                           <img
-                            className="object-fill rounded-2xl border border-gray-900 shadow-xl"
+                            className=" object-contain rounded-2xl border border-gray-900 shadow-xl"
                             style={{ height: "500px", width: "550px" }}
                             src={`https://ik.imagekit.io/bubenik/PostImages/${post.image}`}
                           ></img>

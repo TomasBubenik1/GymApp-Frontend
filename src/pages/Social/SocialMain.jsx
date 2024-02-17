@@ -138,7 +138,7 @@ function SocialMain() {
                       <img
                         src={URL.createObjectURL(selectedImage)}
                         alt="Selected Preview"
-                        className="object-fill rounded-lg"
+                        className=" object-contain rounded-lg"
                         style={{ height: "500px", width: "450px" }}
                       />
                       <div className="absolute top-0 right-0">
@@ -231,8 +231,7 @@ function SocialMain() {
                     <p>{post.content}</p>
                     {post.image && (
                       <img
-                        className="object-fill rounded-2xl border border-gray-900 shadow-xl"
-                        style={{ height: "500px", width: "550px" }}
+                        className="object-contain rounded-2xl border border-gray-900 p-1 shadow-xl"
                         src={`https://ik.imagekit.io/bubenik/PostImages/${post.image}`}
                       ></img>
                     )}

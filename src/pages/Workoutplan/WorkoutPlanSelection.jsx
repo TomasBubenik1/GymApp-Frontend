@@ -39,7 +39,8 @@ export default function WorkoutPlans() {
           title: workoutPlanTitle,
           description: workoutPlanDescription,
           userId: userData.id,
-        }
+        },
+        { withCredentials: true }
       );
       setOpenCreateDialog(!openCreateDialog);
     } catch (error) {
@@ -113,7 +114,7 @@ export default function WorkoutPlans() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 px-4">
                 {workoutPlans.map((workoutplan, i) => (
                   <div
-                    className="flex flex-col border shadow-lg border-accent rounded-lg overflow-hidden cursor-pointer group-hover:transition duration-500 bg-foreground h-[280px] w-[22vw]"
+                    className="flex flex-col border shadow-lg border-accent rounded-lg overflow-hidden cursor-pointer hover:transition duration-500 bg-foreground xl:h-[270px]"
                     key={i}
                   >
                     <Link to={`../workoutdetails/${workoutplan.id}`}>
@@ -161,10 +162,10 @@ export default function WorkoutPlans() {
                   </div>
                 ))}
                 <div
-                  className="flex border justify-center items-center border-accent rounded-lg overflow-hidden shadow-lg transform transition duration-500 cursor-pointer group h-[280px] w-[370px]"
+                  className="flex border justify-center items-center border-accent rounded-lg overflow-hidden shadow-lg transform transition duration-500 cursor-pointer group 2xl:h-[330px] xl:h-[270px]"
                   onClick={() => setOpenCreateDialog(true)}
                 >
-                  <span className="material-symbols-outlined mt-3 text-text text-4xl text-center group-hover:scale-150 transition duration-500 group-hover:brightness-150 group-hover:">
+                  <span className="material-symbols-outlined mt-3 text-text text-4xl text-center group-hover:scale-150 transition duration-500 group-hover:brightness-150 group-hover: ">
                     add
                   </span>
                 </div>
@@ -202,10 +203,23 @@ export default function WorkoutPlans() {
                 <textarea
                   maxLength={255}
                   onChange={handleDescriptionChange}
-                  className="bg-[#18181B] border rounded-md  self-center text-white w-[80%] h-[40%]"
+                  className="bg-[#18181B] border rounded-md  self-center text-white w-[80%] h-[20%]"
                   placeholder="Description"
                 ></textarea>
 
+                <div className=" flex flex-row justify-center mt-5">
+                  <p className="text-text mt-2 text-lg font-semibold">
+                    Private:
+                  </p>
+                  <Checkbox
+                    {...label}
+                    color="success"
+                    sx={{
+                      color: "#46B635",
+                      marginTop: "4px",
+                    }}
+                  />
+                </div>
                 <div className="flex grow w-full justify-end items-end gap-2">
                   <button
                     className="mb-5 rounded-md text-white text-sm font-semibold bg-[#2f2f35] w-20 h-8"

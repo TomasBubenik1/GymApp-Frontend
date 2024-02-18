@@ -21,6 +21,7 @@ export default function WorkoutPlans() {
   const [workoutPlanTitle, setWorkoutTitle] = useState("");
   const [workoutPlanDescription, setWorkoutDescription] = useState("");
   const [openDropdownId, setOpenDropdownId] = useState(null);
+  const [notificationCount, setNotificationCount] = useState(0);
 
   const handleTitleChange = (e) => {
     setWorkoutTitle(e.target.value);
@@ -29,6 +30,20 @@ export default function WorkoutPlans() {
   const handleDescriptionChange = (e) => {
     setWorkoutDescription(e.target.value);
   };
+
+  async function handleWorkoutPlanDelete(workoutPlanId) {
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/deleteworkoutplan",
+        {
+          workoutPlanId: workoutPlanId,
+        },
+        { withCredentials: true }
+      );
+    } catch (error) {
+      console.error("There was error deleting workoutplan:", error);
+    }
+  }
 
   async function handleCreateWorkoutPlan() {
     try {
@@ -65,13 +80,13 @@ export default function WorkoutPlans() {
         }
       );
       setUserData(response.data.UserData);
-      setWorkoutPlans(response.data.exercisePlans);
-      setUserExerciseData(response.data.userExerciseData);
+      setWorkoutPlans(response.data.UserData.workoutPlans);
+      setNotificationCount(response.data.UserData.receivedNotifications.length);
     } catch (error) {
       console.error("Error fetching logged in user data:", error);
     }
   }
-
+  
   useEffect(() => {
     fetchLoggedInData();
   }, []);
@@ -79,7 +94,11 @@ export default function WorkoutPlans() {
   return (
     <div className="">
       <div className="flex bg-backgroundcolor w-full">
-        <Navbar currentSite={"workoutplans"} username={userData?.username} />
+        <Navbar
+          currentSite={"workoutplans"}
+          username={userData?.username}
+          notificationCount={notificationCount}
+        />
         <main className="flex-grow bg-backgroundcolor h-full">
           <nav className="w-full h-20 flex justify-between items-center bg-backgroundcolor border-b border-gray-700">
             {Object.keys(selectedWorkoutPlan).length > 1 ? (
@@ -114,7 +133,7 @@ export default function WorkoutPlans() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 px-4">
                 {workoutPlans.map((workoutplan, i) => (
                   <div
-                    className="flex flex-col border shadow-lg border-accent rounded-lg overflow-hidden cursor-pointer hover:transition duration-500 bg-foreground xl:h-[270px]"
+                    className="flex flex-col border shadow-lg border-accent rounded-lg overflow-hidden cursor-pointer hover:transition duration-500 bg-foreground xl:h-[270px] 2xl:h-[310px] 2xl:w-[450px] "
                     key={i}
                   >
                     <Link to={`../workoutdetails/${workoutplan.id}`}>
@@ -145,7 +164,12 @@ export default function WorkoutPlans() {
                             style={{ marginLeft: "-50px" }}
                           >
                             <ul>
-                              <li className="p-2 hover:bg-foregroundhover rounded-t-lg flex flex-row">
+                              <li
+                                className="p-2 hover:bg-foregroundhover rounded-t-lg flex flex-row"
+                                onClick={() =>
+                                  handleWorkoutPlanDelete(workoutplan.id)
+                                }
+                              >
                                 <span className="material-symbols-outlined text-red-600 text-2xl text-center">
                                   delete_forever
                                 </span>
@@ -162,7 +186,7 @@ export default function WorkoutPlans() {
                   </div>
                 ))}
                 <div
-                  className="flex border justify-center items-center border-accent rounded-lg overflow-hidden shadow-lg transform transition duration-500 cursor-pointer group 2xl:h-[330px] xl:h-[270px]"
+                  className="flex border justify-center items-center border-accent rounded-lg overflow-hidden shadow-lg transform transition duration-500 cursor-pointer xl:h-[270px] 2xl:h-[310px] 2xl:w-[450px]"
                   onClick={() => setOpenCreateDialog(true)}
                 >
                   <span className="material-symbols-outlined mt-3 text-text text-4xl text-center group-hover:scale-150 transition duration-500 group-hover:brightness-150 group-hover: ">

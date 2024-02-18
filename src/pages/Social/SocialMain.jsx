@@ -17,6 +17,9 @@ function SocialMain() {
   const [postText, setPostText] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
   const [posts, setAllPosts] = useState([]);
+  const [foundUsers, setFoundUsers] = useState([]);
+  const [notificationCount, setNotificationCount] = useState(0);
+
   const navigate = useNavigate();
   useEffect(() => {
     fetchLoggedInData();
@@ -26,6 +29,7 @@ function SocialMain() {
 
   useEffect(() => {
     handleUserSearch();
+    console.log(foundUsers);
   }, [searchText]);
   function handlePostTextChange(e) {
     setPostText(e.target.value);
@@ -71,6 +75,8 @@ function SocialMain() {
       );
       setUserData(response.data.UserData);
       setWorkoutPlans(response.data.exercisePlans);
+      setNotificationCount(response.data.UserData.receivedNotifications.length);
+
       console.log(response);
     } catch (error) {
       console.error("Error fetching logged in user data:", error);
@@ -88,7 +94,7 @@ function SocialMain() {
       },
       { withCredentials: true }
     );
-    console.log(res);
+    setFoundUsers(res.data.foundUsers);
   }
   const handlePostClick = (e, postId) => {
     if (e.target.matches(".no-redirect") || e.target.closest(".no-redirect")) {
@@ -102,16 +108,34 @@ function SocialMain() {
   return (
     <div className="flex flex-col">
       <div className="flex bg-backgroundcolor w-full">
-        <Navbar currentSite={"social"} username={userData.username} />
+        <Navbar currentSite={"social"} username={userData.username} notificationCount={notificationCount} />
         <main className="flex-grow bg-backgroundcolor">
           <nav className="w-full h-20 flex justify-between items-center bg-backgroundcolor border-b border-gray-700">
             <h1 className="text-3xl text-text font-bold ml-5">Social</h1>
             <div className="flex flex-row gap-2">
-              <input
-                onChange={(e) => handleSearchTextChange(e)}
-                className=" bg-foreground rounded-lg p-1 text-text"
-                placeholder="Search for your friends!"
-              ></input>
+              <div className="flex flex-col relative">
+                <input
+                  onChange={(e) => handleSearchTextChange(e)}
+                  className="bg-foreground rounded-lg p-1 text-text h-full"
+                  placeholder="Search for your friends!"
+                ></input>
+                {Object.keys(foundUsers).length > 0 && searchText !== "" && (
+                  <div className="absolute mt-14 border border-gray-700 p-3 w-full bg-foreground rounded-lg shadow-[0_0px_5px_]">
+                    {foundUsers.map((user, i) => {
+                      return (
+                        <div key={i} className="text-text flex-row flex mt-2 ">
+                          <Avatar src={`${user.profilepicture}`}></Avatar>
+                          <div className="flex flex-col">
+                            <p className=" font-bold">{user.nickname}</p>
+                            <p className="opacity-50">@{user.username}</p>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+
               <ProfileBox
                 nickname={userData.nickname}
                 profilepic={userData.profilepicture}

@@ -147,7 +147,11 @@ function CalorieProgress({ initialConsumedCalories, initialGoalCalories }) {
             className="text-base text-text bg-transparent w-full font-semibold mr-2 p-1"
           />
           <p>kcal</p>
-          <button onClick={handleConfirmClick}>
+          <button
+            className=" disabled:opacity-30"
+            onClick={handleConfirmClick}
+            disabled={goalValueInput < 0 || goalValueInput > 20000}
+          >
             <span className="material-symbols-outlined text-[20px]">check</span>
           </button>
         </div>

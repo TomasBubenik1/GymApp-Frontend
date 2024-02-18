@@ -14,6 +14,7 @@ import ProfilePage from "./pages/Social/ProfilePage";
 import ProfileSettings from "./pages/ProfileSettings";
 import PostDetails from "./pages/Social/PostDetails";
 import WorkoutPlanDetails from "./pages/Workoutplan/workoutplandetails";
+import NotificationPage from "./pages/Social/NotificationPage";
 
 function App() {
   const [userData, setUserData] = useState(null);
@@ -48,6 +49,11 @@ function App() {
           ></Route>
           <Route path=":username" element={<ProfilePage />} exact></Route>
           <Route path="settings" element={<ProfileSettings />} exact></Route>
+          <Route
+            path="notifications"
+            element={<NotificationPage />}
+            exact
+          ></Route>
         </Route>
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="login" element={<Login />}></Route>

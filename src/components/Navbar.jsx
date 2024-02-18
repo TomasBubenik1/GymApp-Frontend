@@ -1,17 +1,24 @@
 import { Link } from "react-router-dom";
+import { useEffect } from "react";
 import axios from "axios";
 import Cookies from "universal-cookie";
 
-function Navbar({ currentSite, username }) {
-  async function Logout() {
+function Navbar({ currentSite, username, notificationCount }) {
+  async function getNotifications() {
     try {
-      await axios
-        .post("http://localhost:5000/api/auth/logout")
-        .then(cookies.remove("connect.sid"), alert("Logged out sucessfully"));
+      const res = await axios.post(
+        "http://localhost:5000/api/getfriendreqnotifications",
+        {},
+        { withCredentials: true }
+      );
+      console.log("Notifications:", res);
     } catch (error) {
-      alert(error);
+      console.error("There was error getting notification count:", error);
     }
   }
+  useEffect(() => {
+    getNotifications();
+  }, []);
 
   const cookies = new Cookies();
 
@@ -38,7 +45,7 @@ function Navbar({ currentSite, username }) {
             to={"/dashboard"}
             title="dashboard"
           >
-            <span className="mr-3 material-symbols-outlined text-navIcons text-text transition duration-150 ease-in hover:shadow-2xl hover:bg-accent hover:bg-opacity-25">
+            <span className="mr-3 material-symbols-outlined text-navIcons text-text transition duration-150 ease-in">
               space_dashboard
             </span>
             Dashboard
@@ -50,7 +57,7 @@ function Navbar({ currentSite, username }) {
             to={"/social"}
             title="dashboard"
           >
-            <span className="mr-3 material-symbols-outlined text-navIcons text-accent transition duration-150 ease-in hover:shadow-2xl hover:bg-accent hover:bg-opacity-25">
+            <span className="mr-3 material-symbols-outlined text-navIcons text-accent transition duration-150 ease-in ">
               groups
             </span>
             Social
@@ -61,7 +68,7 @@ function Navbar({ currentSite, username }) {
             to={"/social"}
             title="dashboard"
           >
-            <span className="mr-3 material-symbols-outlined text-navIcons text-text transition duration-150 ease-in hover:shadow-2xl hover:bg-accent hover:bg-opacity-25">
+            <span className="mr-3 material-symbols-outlined text-navIcons text-text transition duration-150 ease-in ">
               groups
             </span>
             Social
@@ -73,7 +80,7 @@ function Navbar({ currentSite, username }) {
             to={"/workoutplanselection"}
             title="dashboard"
           >
-            <span className="mr-3 material-symbols-outlined text-navIcons text-accent transition duration-150 ease-in hover:shadow-2xl hover:bg-accent hover:bg-opacity-25">
+            <span className="mr-3 material-symbols-outlined text-navIcons text-accent transition duration-150 ease-in ">
               list_alt
             </span>
             Workout Plans
@@ -84,7 +91,7 @@ function Navbar({ currentSite, username }) {
             to={"/workoutplanselection"}
             title="dashboard"
           >
-            <span className="mr-3 material-symbols-outlined text-navIcons text-text transition duration-150 ease-in hover:shadow-2xl hover:bg-accent hover:bg-opacity-25">
+            <span className="mr-3 material-symbols-outlined text-navIcons text-text transition duration-150 ease-in  ">
               list_alt
             </span>
             Workout Plans
@@ -96,7 +103,7 @@ function Navbar({ currentSite, username }) {
             to={"/exercises"}
             title="dashboard"
           >
-            <span className="mr-3 material-symbols-outlined text-navIcons text-accent transition duration-150 ease-in hover:shadow-2xl hover:bg-accent hover:bg-opacity-25">
+            <span className="mr-3 material-symbols-outlined text-navIcons text-accent transition duration-150 ease-in  ">
               fitness_center
             </span>
             Exercises
@@ -107,7 +114,7 @@ function Navbar({ currentSite, username }) {
             to={"/exercises"}
             title="dashboard"
           >
-            <span className="mr-3 material-symbols-outlined text-navIcons text-text transition duration-150 ease-in hover:shadow-2xl hover:bg-accent hover:bg-opacity-25">
+            <span className="mr-3 material-symbols-outlined text-navIcons text-text transition duration-150 ease-in ">
               fitness_center
             </span>
             Exercises
@@ -115,24 +122,38 @@ function Navbar({ currentSite, username }) {
         )}
         {currentSite == "notifications" ? (
           <Link
-            className="bg-accent w-full p-2 bg-opacity-20 rounded-lg flex  text-accent transition duration-150 ease-in hover:shadow-2xl hover:bg-accent hover:bg-opacity-25"
+            className="bg-accent w-full p-2 bg-opacity-20 rounded-lg flex  text-accent transition duration-150 ease-in "
             to={"/exercises"}
             title="dashboard"
           >
-            <span className="mr-3 material-symbols-outlined text-navIcons text-accent transition duration-150 ease-in hover:shadow-2xl hover:bg-accent hover:bg-opacity-25">
-              notifications
-            </span>
+            <div className="relative flex flex-col">
+              <span className="material-symbols-outlined text-navIcons transition duration-150 ease-in bg-accent  ">
+                notifications
+              </span>
+              {notificationCount > 0 && (
+                <p className="absolute top-0 right-0 text-xs bg-accent text-white rounded-full px-1.5 py-0.5">
+                  {notificationCount}
+                </p>
+              )}
+            </div>
             Notifications
           </Link>
         ) : (
           <Link
-            className="rounded-lg p-2 flex w-full  text-text transition duration-150 ease-in hover:shadow-2xl hover:bg-accent hover:bg-opacity-25"
-            to={"/exercises"}
+            className="rounded-lg p-2 flex w-full text-text transition duration-150 ease-in hover:shadow-2xl hover:bg-accent hover:bg-opacity-25"
+            to="/exercises"
             title="dashboard"
           >
-            <span className="mr-3 material-symbols-outlined text-navIcons text-text transition duration-150 ease-in hover:shadow-2xl hover:bg-accent hover:bg-opacity-25">
-              notifications
-            </span>
+            <div className="relative flex flex-col">
+              <span className="material-symbols-outlined text-navIcons transition duration-150 ease-in  ">
+                notifications
+              </span>
+              {notificationCount > 0 && (
+                <p className="absolute top-0 right-0 text-xs bg-accent text-white rounded-full px-1.5 py-0.5">
+                  {notificationCount}
+                </p>
+              )}
+            </div>
             Notifications
           </Link>
         )}
@@ -142,7 +163,7 @@ function Navbar({ currentSite, username }) {
             to={`../${username}`}
             title="dashboard"
           >
-            <span className="mr-3 material-symbols-outlined text-navIcons text-accent transition duration-150 ease-in hover:shadow-2xl hover:bg-accent hover:bg-opacity-25">
+            <span className="mr-3 material-symbols-outlined text-navIcons text-accent transition duration-150 ease-in ">
               person
             </span>
             Profile
@@ -153,7 +174,7 @@ function Navbar({ currentSite, username }) {
             to={`../${username}`}
             title="dashboard"
           >
-            <span className="mr-3 material-symbols-outlined text-navIcons text-text transition duration-150 ease-in hover:shadow-2xl hover:bg-accent hover:bg-opacity-25">
+            <span className="mr-3 material-symbols-outlined text-navIcons text-text transition duration-150 ease-in">
               person
             </span>
             Profile

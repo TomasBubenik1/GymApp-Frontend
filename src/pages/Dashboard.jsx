@@ -12,7 +12,6 @@ import CaloriesBarChart from "../components/Charts/CaloriesBarChart";
 function Dashboard() {
   const [userData, setUserData] = useState([]);
   const [workoutPlans, setWorkoutPlans] = useState([]);
-
   const [calorieDate, setCalorieDate] = useState("");
   const [calorieData, setCalorieData] = useState([]);
   const [editingWeight, setEditingWeight] = useState(false);
@@ -21,6 +20,8 @@ function Dashboard() {
   const [weight, setWeight] = useState(0);
   const [height, setHeight] = useState(0);
   const [goalWeight, setGoalWeight] = useState(0);
+  const [weightHistory, setWeightHistory] = useState([]);
+  const [goalWeightHistory, setGoalWeightHistory] = useState([]);
 
   useEffect(() => {
     fetchLoggedInData();
@@ -79,7 +80,7 @@ function Dashboard() {
       const data = await axios.post(
         "http://localhost:5000/api/getcalorieintake",
         {
-          date: dateObj,
+          date: dateObj
         },
         { withCredentials: true }
       );
@@ -102,12 +103,20 @@ function Dashboard() {
       setWeight(response.data.UserData.currentWeight);
       setHeight(response.data.UserData.height);
       setGoalWeight(response.data.UserData.goalWeight);
+      console.log("akokot", response.data);
+      setGoalWeightHistory({
+        weightHistory: response.data.UserData.userGoalWeightHistory,
+      });
+      setWeightHistory({
+        goalWeightHistory: response.data.UserData.weightHistory,
+      });
     } catch (error) {
       console.error("Error fetching logged in user data:", error);
     }
   }
 
-  console.log("Calorie Data", calorieData);
+  console.log("Weight History:", weightHistory);
+  console.log("Goal Weight History:", goalWeightHistory);
   return (
     <div className="flex flex-col">
       <div className="flex bg-backgroundcolor w-full">
@@ -247,6 +256,12 @@ function Dashboard() {
           </div>
           <div className="ml-5">
             <SingleExerciseChart></SingleExerciseChart>
+          </div>
+          <div>
+            {/* <WeightLineChart
+              weightHistory={weightHistory}
+              goalWeightHistory={goalWeightHistory}
+            ></WeightLineChart>  */}
           </div>
         </main>
       </div>

@@ -47,7 +47,11 @@ export default function ExerciseDetails() {
   console.log(exerciseData);
   return (
     <div className="flex bg-backgroundcolor w-full">
-      <Navbar currentSite={"exercises"} username={userData.username} notificationCount={notificationCount} />
+      <Navbar
+        currentSite={"exercises"}
+        username={userData.username}
+        notificationCount={notificationCount}
+      />
       <main className="grow bg-backgroundcolor">
         <nav className="w-full h-20 flex justify-between items-center bg-backgroundcolor border-b border-gray-700">
           <h1 className="text-3xl text-text font-bold ml-5">Exercises</h1>

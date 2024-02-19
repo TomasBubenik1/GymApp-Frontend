@@ -147,7 +147,6 @@ export default function ProfilePage() {
                         </button>
                       ) : (
                         <div className="flex justify-center items-center gap-5 ml-5 bg-backgroundcolor p-2 rounded-lg">
-                          {" "}
                           <button
                             onClick={() => handleAcceptFriendRequest()}
                             className=" bg-accent text-text rounded-lg w-48 h-9 text-base font-bold justify-center self-center text-center"

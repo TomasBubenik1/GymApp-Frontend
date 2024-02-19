@@ -3,8 +3,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function Register() {
-  const [email, setEmail] = useState("");
-  const [currentWeight, setCurrentWeight] = useState("");
   const [pageProgress, setPageProgress] = useState(1);
   const [emailTaken, setEmailTaken] = useState(false);
   const [usernameTaken, setUsernameTaken] = useState(false);

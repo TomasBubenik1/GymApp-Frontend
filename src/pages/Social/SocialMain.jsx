@@ -122,11 +122,13 @@ function SocialMain() {
                     {foundUsers.map((user, i) => {
                       return (
                         <div key={i} className="text-text flex-row flex mt-2 ">
-                          <Avatar src={`${user.profilepicture}`}></Avatar>
-                          <div className="flex flex-col">
-                            <p className=" font-bold">{user.nickname}</p>
-                            <p className="opacity-50">@{user.username}</p>
-                          </div>
+                          <Link to={`../${user.username}`}>
+                            <Avatar src={`${user.profilepicture}`}></Avatar>
+                            <div className="flex flex-col">
+                              <p className=" font-bold">{user.nickname}</p>
+                              <p className="opacity-50">@{user.username}</p>
+                            </div>
+                          </Link>
                         </div>
                       );
                     })}

@@ -8,11 +8,11 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleEmailChange = (e) => {
+  function handleEmailChange(e){
     setEmail(e.target.value);
   };
 
-  const handlePasswordChange = (e) => {
+  function handlePasswordChange(e){
     setPassword(e.target.value);
   };
 

@@ -18,7 +18,6 @@ function SocialMain() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [posts, setAllPosts] = useState([]);
   const [foundUsers, setFoundUsers] = useState([]);
-  const [notificationCount, setNotificationCount] = useState(0);
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -75,7 +74,6 @@ function SocialMain() {
       );
       setUserData(response.data.UserData);
       setWorkoutPlans(response.data.exercisePlans);
-      setNotificationCount(response.data.UserData.receivedNotifications.length);
 
       console.log(response);
     } catch (error) {
@@ -108,7 +106,7 @@ function SocialMain() {
   return (
     <div className="flex flex-col">
       <div className="flex bg-backgroundcolor w-full">
-        <Navbar currentSite={"social"} username={userData.username} notificationCount={notificationCount} />
+        <Navbar currentSite={"social"} username={userData.username} />
         <main className="flex-grow bg-backgroundcolor">
           <nav className="w-full h-20 flex justify-between items-center bg-backgroundcolor border-b border-gray-700">
             <h1 className="text-3xl text-text font-bold ml-5">Social</h1>
@@ -228,7 +226,7 @@ function SocialMain() {
                       ></Avatar>
                     </Link>
                     <Link to={`../${post.createdBy.username}`}>
-                      <div className="flex flex-row">
+                      <div className="flex flex-row ml-1">
                         <p
                           className=" mt-2 font-bold hover:border-b"
                           style={{}}

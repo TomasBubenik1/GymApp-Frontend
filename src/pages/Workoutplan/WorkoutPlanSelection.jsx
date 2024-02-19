@@ -21,7 +21,6 @@ export default function WorkoutPlans() {
   const [workoutPlanTitle, setWorkoutTitle] = useState("");
   const [workoutPlanDescription, setWorkoutDescription] = useState("");
   const [openDropdownId, setOpenDropdownId] = useState(null);
-  const [notificationCount, setNotificationCount] = useState(0);
 
   const handleTitleChange = (e) => {
     setWorkoutTitle(e.target.value);
@@ -81,7 +80,6 @@ export default function WorkoutPlans() {
       );
       setUserData(response.data.UserData);
       setWorkoutPlans(response.data.UserData.workoutPlans);
-      setNotificationCount(response.data.UserData.receivedNotifications.length);
     } catch (error) {
       console.error("Error fetching logged in user data:", error);
     }
@@ -97,7 +95,6 @@ export default function WorkoutPlans() {
         <Navbar
           currentSite={"workoutplans"}
           username={userData?.username}
-          notificationCount={notificationCount}
         />
         <main className="flex-grow bg-backgroundcolor h-full">
           <nav className="w-full h-20 flex justify-between items-center bg-backgroundcolor border-b border-gray-700">

@@ -11,7 +11,6 @@ export default function PostDetails() {
   const { postId } = useParams();
   const [userData, setUserData] = useState(null);
   const [post, setPost] = useState(null);
-  const [notificationCount, setNotificationCount] = useState(0);
 
   async function fetchLoggedInData() {
     try {
@@ -22,7 +21,6 @@ export default function PostDetails() {
         }
       );
       setUserData(response.data.UserData);
-      setNotificationCount(response.data.UserData.receivedNotifications.length);
     } catch (error) {
       console.error("Error fetching logged in user data:", error);
     }
@@ -46,7 +44,6 @@ export default function PostDetails() {
       <Navbar
         currentSite="dashboard"
         username={userData?.username}
-        notificationCount={notificationCount}
       />
       <main className="grow bg-backgroundcolor">
         <nav className="w-full h-20 flex justify-between items-center bg-backgroundcolor border-b border-gray-700">

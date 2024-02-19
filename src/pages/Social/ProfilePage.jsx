@@ -13,7 +13,6 @@ export default function ProfilePage() {
   const [userData, setUserData] = useState([]);
   const [profileData, setProfileData] = useState([]);
   const [posts, setAllPosts] = useState([]);
-  const [notificationCount, setNotificationCount] = useState(0);
 
   const [friendStatus, setFriendStatus] = useState({
     status: null,
@@ -52,8 +51,6 @@ export default function ProfilePage() {
         }
       );
       setUserData(response.data.UserData);
-      setNotificationCount(response.data.UserData.receivedNotifications.length);
-
     } catch (error) {
       console.error("Error fetching logged in user data:", error);
     }
@@ -117,7 +114,7 @@ export default function ProfilePage() {
 
   return (
     <div className="flex bg-backgroundcolor w-full">
-      <Navbar currentSite={"profile"} username={userData.username} notificationCount={notificationCount} />
+      <Navbar currentSite={"profile"} username={userData.username} />
       <main className=" grow bg-backgroundcolor">
         <nav className="w-full h-20 flex justify-between items-center bg-backgroundcolor border-b border-gray-700">
           <h1 className="text-3xl text-text font-bold ml-5">{username}</h1>
@@ -153,7 +150,7 @@ export default function ProfilePage() {
                           {" "}
                           <button
                             onClick={() => handleAcceptFriendRequest()}
-                            className=" bg-accent text-text rounded-lg w-48 h-9 text-base font-bold justify-center self-center text-center" 
+                            className=" bg-accent text-text rounded-lg w-48 h-9 text-base font-bold justify-center self-center text-center"
                           >
                             Accept Friend Request
                           </button>
@@ -183,12 +180,11 @@ export default function ProfilePage() {
 
                   {username == userData.username && (
                     <div>
-                      <button className="text-text rounded-lg w-32 ml-5 h-9 text-base font-bold justify-center self-center text-center bg-foreground">
-                        Edit profile
-                      </button>
-                      <button className="text-text rounded-lg w-32 ml-2 h-9 text-base font-bold justify-center self-center text-center bg-foreground">
-                        Settings
-                      </button>
+                      <Link to={"../settings"}>
+                        <button className="text-text rounded-lg w-32 ml-6 h-9 text-base font-bold justify-center self-center text-center bg-foreground">
+                          Settings
+                        </button>
+                      </Link>
                     </div>
                   )}
                 </div>

@@ -103,7 +103,7 @@ export function ProfileSettings() {
 
   return (
     <div className="flex bg-backgroundcolor w-full">
-      <Navbar currentSite={"dashboard"} />
+      <Navbar currentSite={"dashboard"} username={userData.username} />
       <div className=" grow flex flex-col">
         <nav className="w-full h-20 flex justify-between items-center bg-backgroundcolor border-b border-gray-700">
           <h1 className="text-3xl text-text font-bold ml-5">Settings</h1>

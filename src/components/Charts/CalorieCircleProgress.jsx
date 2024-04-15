@@ -25,7 +25,6 @@ function CalorieProgress({ initialConsumedCalories, initialGoalCalories }) {
     calculateProgress();
   }, [consumedCalories, goalCalories]);
 
-  console.log({ initialGoalCalories, initialConsumedCalories });
 
   const [goalValueInput, setGoalValueInput] = useState(consumedCalories);
 

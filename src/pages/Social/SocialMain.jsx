@@ -255,7 +255,7 @@ function SocialMain() {
                     <p>{post.content}</p>
                     {post.image && (
                       <img
-                        className="object-contain rounded-2xl border border-gray-900 p-1 shadow-xl"
+                        className="object-contain rounded-2xl self-center border border-gray-900 p-1 shadow-xl"
                         src={`https://ik.imagekit.io/bubenik/PostImages/${post.image}`}
                       ></img>
                     )}

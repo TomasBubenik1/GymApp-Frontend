@@ -8,6 +8,7 @@ import ProfileBox from "../components/ProfileBox";
 import Footer from "../components/Footer";
 import CalorieProgress from "../components/Charts/CalorieCircleProgress";
 import CaloriesBarChart from "../components/Charts/CaloriesBarChart";
+import WeightProgressChart from "../components/Charts/WeightProgressChart";
 
 function Dashboard() {
   const [userData, setUserData] = useState([]);
@@ -20,8 +21,8 @@ function Dashboard() {
   const [weight, setWeight] = useState(0);
   const [height, setHeight] = useState(0);
   const [goalWeight, setGoalWeight] = useState(0);
-  const [weightHistory, setWeightHistory] = useState([]);
-  const [goalWeightHistory, setGoalWeightHistory] = useState([]);
+  const [weightHistory, setWeightHistory] = useState();
+  const [goalWeightHistory, setGoalWeightHistory] = useState();
 
   useEffect(() => {
     fetchLoggedInData();
@@ -33,6 +34,7 @@ function Dashboard() {
   function handleWeightInputChange(e) {
     setWeight(e.target.value);
     const input = e.target;
+
     input.style.width = (input.value.length + 2) * 8 + "px";
   }
   function handleGoalWeightInputChange(e) {
@@ -76,11 +78,10 @@ function Dashboard() {
         return;
       }
 
-      console.log(dateObj);
       const data = await axios.post(
         "http://localhost:5000/api/getcalorieintake",
         {
-          date: dateObj
+          date: dateObj,
         },
         { withCredentials: true }
       );
@@ -103,20 +104,17 @@ function Dashboard() {
       setWeight(response.data.UserData.currentWeight);
       setHeight(response.data.UserData.height);
       setGoalWeight(response.data.UserData.goalWeight);
-      console.log("akokot", response.data);
       setGoalWeightHistory({
-        weightHistory: response.data.UserData.userGoalWeightHistory,
+        goalWeightHistory: response.data.UserData.userGoalWeightHistory,
       });
       setWeightHistory({
-        goalWeightHistory: response.data.UserData.weightHistory,
+        weightHistory: response.data.UserData.weightHistory,
       });
     } catch (error) {
       console.error("Error fetching logged in user data:", error);
     }
   }
 
-  console.log("Weight History:", weightHistory);
-  console.log("Goal Weight History:", goalWeightHistory);
   return (
     <div className="flex flex-col">
       <div className="flex bg-backgroundcolor w-full">
@@ -254,14 +252,18 @@ function Dashboard() {
               )}
             </div>
           </div>
-          <div className="ml-5">
+          <div className="ml-5 flex flex-row">
             <SingleExerciseChart></SingleExerciseChart>
-          </div>
-          <div>
-            {/* <WeightLineChart
-              weightHistory={weightHistory}
-              goalWeightHistory={goalWeightHistory}
-            ></WeightLineChart>  */}
+            <div>
+              {weightHistory && goalWeightHistory && (
+                <WeightProgressChart
+                  WeightHistory={weightHistory}
+                  GoalWeightHistory={goalWeightHistory}
+                  currentWeight={weight}
+                  currentGoalWeight={goalWeight}
+                ></WeightProgressChart>
+              )}
+            </div>
           </div>
         </main>
       </div>

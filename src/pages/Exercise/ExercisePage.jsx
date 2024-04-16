@@ -221,7 +221,11 @@ export default function ExercisePage() {
   return (
     <div className="flex flex-col">
       <div className="flex bg-backgroundcolor w-full">
-        <Navbar currentSite={"exercises"} username={userData.username} notificationCount={notificationCount} />
+        <Navbar
+          currentSite={"exercises"}
+          username={userData.username}
+          notificationCount={notificationCount}
+        />
         <main className=" grow bg-backgroundcolor">
           <nav className="w-full h-20 flex justify-between items-center bg-backgroundcolor border-b border-gray-700">
             <h1 className="text-3xl text-text font-bold ml-5">Exercises</h1>
@@ -238,7 +242,7 @@ export default function ExercisePage() {
               <div className="text-2xl flex items-center gap-2 mt-3">
                 <h1 className="text-stone-300">Welcome back</h1>
                 <h1 className=" text-accent font-bold mr-3">
-                  {userData.realname}!👋
+                  {userData.username}!👋
                 </h1>
               </div>
               <div className="h-20 flex gap-3 mt-6 mb-5">
@@ -392,13 +396,16 @@ export default function ExercisePage() {
                         style={{ width: "80%", height: "20%" }}
                       ></textarea>
                       <div className="flex grow w-full justify-end items-end gap-2">
-                        <button className="mb-5 rounded-md text-white text-sm font-semibold bg-[#2f2f35] w-20 h-8">
+                        <button
+                          className="mb-5 rounded-md text-white text-sm font-semibold bg-[#2f2f35] w-20 h-8"
+                          onClick={() => setOpenCreateDialog(false)}
+                        >
                           Cancel
                         </button>
                         <button
                           onClick={handleCreateWorkoutPlan}
                           disabled={workoutPlanTitle.length < 3}
-                          className=" disabled:opacity-50 disabled:bg-[#2f2f35]   mb-5 mr-5 rounded-md text-white text-sm font-semibold bg-accentColor w-20 h-8"
+                          className=" bg-accent disabled:opacity-50 disabled:bg-[#2f2f35]   mb-5 mr-5 rounded-md text-white text-sm font-semibold bg-accentColor w-20 h-8"
                         >
                           Create
                         </button>

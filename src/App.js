@@ -11,7 +11,7 @@ import ExerciseDetails from "./pages/Exercise/Details";
 import WorkoutPlans from "./pages/Workoutplan/WorkoutPlanSelection";
 import SocialMain from "./pages/Social/SocialMain";
 import ProfilePage from "./pages/Social/ProfilePage";
-import { ProfileSettings } from './pages/Settings';
+import { ProfileSettings } from "./pages/Settings";
 import PostDetails from "./pages/Social/PostDetails";
 import WorkoutPlanDetails from "./pages/Workoutplan/workoutplandetails";
 import NotificationPage from "./pages/Social/NotificationPage";

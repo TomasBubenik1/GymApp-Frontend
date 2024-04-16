@@ -18,6 +18,8 @@ function SocialMain() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [posts, setAllPosts] = useState([]);
   const [foundUsers, setFoundUsers] = useState([]);
+  const [gifMenuOpen, setGifMenuOpen] = useState(false);
+  const [openDropdownId, setOpenDropdownId] = useState(null);
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -38,11 +40,22 @@ function SocialMain() {
     setSelectedImage(e.target.files[0]);
   }
 
-  async function ForYouPosts() {}
-
   async function fetchAllPosts() {
     const response = await axios.get("http://localhost:5000/api/getallposts");
     setAllPosts(response.data);
+  }
+
+  async function handlePostDelete(postId) {
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/deletepost",
+        { postId: postId },
+        { withCredentials: true }
+      );
+      window.location.reload();
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   async function handlePostCreate() {
@@ -103,8 +116,16 @@ function SocialMain() {
     }
   };
 
+  function toggleDropdown(id) {
+    if (openDropdownId === id) {
+      setOpenDropdownId(null);
+    } else {
+      setOpenDropdownId(id);
+    }
+  }
+
   return (
-    <div className="flex flex-col">
+    <div className={`flex flex-col`}>
       <div className="flex bg-backgroundcolor w-full">
         <Navbar currentSite={"social"} username={userData.username} />
         <main className="flex-grow bg-backgroundcolor">
@@ -194,7 +215,12 @@ function SocialMain() {
                       <span className="material-symbols-outlined">image</span>
                     </div>
                   </label>
-                  <label for="gifbox">
+                  <label
+                    for="gifbox"
+                    onClick={() => {
+                      setGifMenuOpen(!gifMenuOpen);
+                    }}
+                  >
                     <div className="flex justify-center items-center rounded-full p-2 text-accent transition duration-150 ease-in hover:shadow-2xl hover:bg-accent hover:bg-opacity-25 ">
                       <span className="material-symbols-outlined">gif_box</span>
                     </div>
@@ -219,16 +245,17 @@ function SocialMain() {
                     <Link to={`../${post.createdBy.username}`}>
                       <Avatar
                         style={{
-                          width: "50px",
-                          height: "48px",
                           marginTop: "2px",
                         }}
                         variant=""
                         src={`${post.createdBy.profilepicture}?tr=w-30,h-30`}
                       ></Avatar>
                     </Link>
-                    <Link to={`../${post.createdBy.username}`}>
-                      <div className="flex flex-row ml-1">
+                    <div className="flex flex-row justify-between w-full">
+                      <Link
+                        to={`../${post.createdBy.username}`}
+                        className=" flex flex-row ml-1"
+                      >
                         <p
                           className=" mt-2 font-bold hover:border-b"
                           style={{}}
@@ -248,8 +275,37 @@ function SocialMain() {
                             }
                           )}
                         </p>
-                      </div>
-                    </Link>
+                      </Link>
+                      {post.createdBy.username === userData.username && (
+                        <div>
+                          <button onClick={() => toggleDropdown(post.id)}>
+                            <span className="self-end material-symbols-outlined text-text text-2xl text-center">
+                              more_horiz
+                            </span>
+                          </button>
+                          {openDropdownId === post.id && (
+                            <div
+                              className="absolute bg-foreground z-50 text-text mt-5 rounded-lg border border-gray-300 w-[100px]"
+                              style={{ marginLeft: "-50px" }}
+                            >
+                              <ul>
+                                <li
+                                  className="p-2 hover:bg-foregroundhover rounded-lg flex flex-row"
+                                  onClick={() => handlePostDelete(post.id)}
+                                >
+                                  <span className="material-symbols-outlined text-red-600 text-xl text-center font-bold mt-1 ml-1">
+                                    delete_forever
+                                  </span>
+                                  <p className="mt-1 text-red-600 font-bold text-lg">
+                                    Delete
+                                  </p>
+                                </li>
+                              </ul>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
                   </div>
                   <div className="text-xl text-white p-3 ml-9  ">
                     <p>{post.content}</p>
@@ -261,11 +317,11 @@ function SocialMain() {
                     )}
                     <div className=" flex ml-10 mt-5 text-gray-700">
                       <div className=" flex flex-row justify-center items-center">
-                        <div className="flex justify-center items-center rounded-full p-2 transition duration-150 ease-in hover:shadow-2xl hover:bg-cyan-400 hover:bg-opacity-25 hover:text-cyan-500">
+                        {/* <div className="flex justify-center items-center rounded-full p-2 transition duration-150 ease-in hover:shadow-2xl hover:bg-cyan-400 hover:bg-opacity-25 hover:text-cyan-500">
                           <span className="material-symbols-outlined">
                             chat_bubble_outline
                           </span>
-                        </div>
+                        </div> */}
                       </div>
                       <div className="flex flex-row justify-center items-center hover:text-pink-500 group no-redirect">
                         {post.likes > 0 ? (
@@ -344,6 +400,23 @@ function SocialMain() {
         </main>
       </div>
       <Footer />
+      {gifMenuOpen && (
+        <div className="absolute flex justify-center items-center z-50 w-screen h-screen">
+          <div className="2xl:w-[500px] 2xl:h-[600px] bg-accent rounded-lg">
+            <div className=" flex flex-row justify-between">
+              <span
+                className="material-symbols-outlined pt-5 pl-5 font-bold text-white"
+                onClick={() => {
+                  setGifMenuOpen(false);
+                }}
+              >
+                close
+              </span>
+              <input className=" w-5/6 bg-black border border-gray-600 rounded-2xl"></input>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -37,9 +37,9 @@ function Navbar({ currentSite, username }) {
     fetchLoggedInData();
   }, []);
   return (
-    <nav className=" lg:w-[300px] 2xl:w-[500px] h-screen sticky top-0 bg-backgroundcolor h-f flex flex-col items-center text text-2xl border-r border-gray-700">
+    <nav className=" lg:w-[300px] lg:min-w-[300px] lg:max-w-[300px] 2xl:min-w-[500px] 2xl:max-w-[500px] 2xl:w-[500px] h-screen sticky top-0 bg-backgroundcolor h-f flex flex-col items-center text text-2xl border-r border-gray-700">
       <a className="text-3xl font-bold text-accent mt-5 text-center">
-        Muscle Tracker
+        <Link to={"/dashboard"}>Muscle Tracker</Link>
       </a>
       <div className="flex flex-col flex-grow-1 h-full justify-start items-start gap-2 mt-12">
         {currentSite == "dashboard" ? (
@@ -108,7 +108,7 @@ function Navbar({ currentSite, username }) {
             <span className="mr-3 material-symbols-outlined text-navIcons text-text transition duration-150 ease-in  ">
               list_alt
             </span>
-            Workout Plan
+            Workout Plans
           </Link>
         )}
         {currentSite == "exercises" ? (

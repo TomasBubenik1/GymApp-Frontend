@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Navbar from "../components/Navbar";
-import BarChartComponent from "../components/Charts/TotalWeightLifted";
-import SingleExerciseChart from "../components/Charts/TotalWeightLifted";
+import BarChartComponent from "../components/Charts/RecentExerciseGraph";
+import SingleExerciseChart from "../components/Charts/RecentExerciseGraph";
 import Avatar from "@mui/joy/Avatar";
 import ProfileBox from "../components/ProfileBox";
 import Footer from "../components/Footer";
@@ -116,7 +116,7 @@ function Dashboard() {
   }
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col w-full  h-full">
       <div className="flex bg-backgroundcolor w-full">
         <Navbar currentSite={"dashboard"} username={userData.username} />
         <main className=" grow bg-backgroundcolor">
@@ -133,10 +133,10 @@ function Dashboard() {
           <div className="text-2xl flex items-center gap-2 mt-3 ml-5">
             <h1 className="text-stone-300">Hey,</h1>
             <h1 className=" text-accent font-bold mr-3">
-              {userData.realname}!👋
+              {userData.username}!👋
             </h1>
           </div>
-          <div className="ml-5 flex flex-row">
+          <div className="lg:flex-row lg:flex 2xl:flex 2xl:flex-row xl:flex xl:flex-row grid grid-cols-2 gap-0">
             <CalorieProgress
               initialConsumedCalories={calorieData.consumedCalories}
               initialGoalCalories={calorieData.goalCalories}
@@ -165,9 +165,14 @@ function Dashboard() {
                   className="absolute bottom-1 right-5 text-accentGlow opacity-75 hover:opacity-100 cursor-pointer"
                   onClick={() => handleBodyMassSubmit()}
                 >
-                  <span className="material-symbols-outlined text-[26px]">
-                    check
-                  </span>
+                  <button
+                    disabled={0 >= height || height > 400}
+                    className=" disabled:text-gray-700"
+                  >
+                    <span className="material-symbols-outlined text-[26px]">
+                      check
+                    </span>
+                  </button>
                 </div>
               ) : (
                 <p
@@ -203,9 +208,14 @@ function Dashboard() {
                   className="absolute bottom-1 right-5 text-accentGlow opacity-75 hover:opacity-100 cursor-pointer"
                   onClick={() => handleBodyMassSubmit()}
                 >
-                  <span className="material-symbols-outlined text-[26px]">
-                    check
-                  </span>
+                  <button
+                    disabled={0 >= weight || weight > 999}
+                    className=" disabled:text-gray-700"
+                  >
+                    <span className="material-symbols-outlined text-[26px]">
+                      check
+                    </span>
+                  </button>
                 </div>
               ) : (
                 <p
@@ -238,9 +248,14 @@ function Dashboard() {
                   className="absolute bottom-1 right-5 text-accentGlow opacity-75 hover:opacity-100 cursor-pointer"
                   onClick={() => handleBodyMassSubmit()}
                 >
-                  <span className="material-symbols-outlined text-[26px]">
-                    check
-                  </span>
+                  <button
+                    disabled={0 >= goalWeight || goalWeight > 400}
+                    className=" disabled:text-gray-700"
+                  >
+                    <span className="material-symbols-outlined text-[26px]">
+                      check
+                    </span>
+                  </button>
                 </div>
               ) : (
                 <p
@@ -252,7 +267,7 @@ function Dashboard() {
               )}
             </div>
           </div>
-          <div className="ml-5 flex flex-row">
+          <div className="ml-5 flex flex-col xl:flex-row">
             <SingleExerciseChart></SingleExerciseChart>
             <div>
               {weightHistory && goalWeightHistory && (

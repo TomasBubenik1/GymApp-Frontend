@@ -57,6 +57,7 @@ export default function WorkoutPlans() {
         { withCredentials: true }
       );
       setOpenCreateDialog(!openCreateDialog);
+      window.location.reload();
     } catch (error) {
       console.error("Error while creating workout plan", error);
     }
@@ -107,7 +108,7 @@ export default function WorkoutPlans() {
                 </div>
               </div>
             ) : (
-              <div className="text-text text-3xl ml-5 font-bold">
+              <div className="text-text text-xl md:text-2xl lg:text-3xl ml-5 font-bold">
                 Select your workout plan:
               </div>
             )}
@@ -120,7 +121,7 @@ export default function WorkoutPlans() {
             </div>
           </nav>
           <div className="flex flex-col items-center justify-center bg-backgroundcolor">
-            <p className="text-text text-3xl font-semibold mb-10">
+            <p className="text-text text-xl md:text-2xl lg:text-3xl  font-semibold mb-10">
               Select your workout plan:
             </p>
             <div className=" flex ">
@@ -180,7 +181,7 @@ export default function WorkoutPlans() {
                   </div>
                 ))}
                 <div
-                  className="flex border justify-center items-center border-accent rounded-lg overflow-hidden shadow-lg transform transition duration-500 cursor-pointer xl:h-[270px] 2xl:h-[310px] 2xl:w-[450px]"
+                  className="flex border justify-center items-center border-accent rounded-lg overflow-hidden shadow-lg transform transition duration-500 cursor-pointer md:h-[222px] w-[280px] h-[220px] md:w-[300PX] lg:w-[352px] lg:h-[240px] xl:w-[397px] xl:h-[270px] 2xl:h-[310px] 2xl:w-[450px]"
                   onClick={() => setOpenCreateDialog(true)}
                 >
                   <span className="material-symbols-outlined mt-3 text-text text-4xl text-center group-hover:scale-150 transition duration-500 group-hover:brightness-150 group-hover: ">
@@ -205,11 +206,13 @@ export default function WorkoutPlans() {
                 <h1 className="text-white text-2xl p-1 ml-14 font-semibold">
                   Create Workout Plan
                 </h1>
+
                 <label className="text-white font-semibold ml-16 mb-3 mt-3">
                   Title
                 </label>
                 <input
                   onChange={handleTitleChange}
+                  maxLength={35}
                   type="text"
                   placeholder="Title"
                   className=" text-white p-1 bg-[#18181B] border rounded-md self-center align-middle"
@@ -221,8 +224,9 @@ export default function WorkoutPlans() {
                 <textarea
                   maxLength={255}
                   onChange={handleDescriptionChange}
-                  className="bg-[#18181B] border rounded-md  self-center text-white w-[80%] h-[1000px] resize-none"
+                  className="bg-[#18181B] border rounded-md  self-center text-white"
                   placeholder="Description"
+                  style={{ width: "80%", height: "20%" }}
                 ></textarea>
                 <div className="flex grow w-full justify-end items-end gap-2">
                   <button
@@ -234,7 +238,7 @@ export default function WorkoutPlans() {
                   <button
                     onClick={handleCreateWorkoutPlan}
                     disabled={workoutPlanTitle.length < 3}
-                    className=" disabled:opacity-50 disabled:bg-[#2f2f35]   mb-5 mr-5 rounded-md text-white text-sm font-semibold bg-accent w-20 h-8"
+                    className=" bg-accent disabled:opacity-50 disabled:bg-[#2f2f35]   mb-5 mr-5 rounded-md text-white text-sm font-semibold bg-accentColor w-20 h-8"
                   >
                     Create
                   </button>

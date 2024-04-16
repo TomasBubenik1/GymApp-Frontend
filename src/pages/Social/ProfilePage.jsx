@@ -104,6 +104,7 @@ export default function ProfilePage() {
         { username: username },
         { withCredentials: true }
       );
+      console.log(response);
       setProfileData(response.data.userProfile);
       setAllPosts(response.data.userProfile.posts || []);
       setFriendStatus(response.data.friendRequestStatus);
@@ -189,8 +190,11 @@ export default function ProfilePage() {
                   )}
                 </div>
                 <div className="text-text text-xl ml-5 flex flex-row gap-5">
-                  <p>{profileData?.posts?.length} posts</p>
-                  <p> {profileData?.workoutPlans?.length} workout plans</p>
+                  <p>Posts: {profileData?.posts?.length}</p>
+                  <p>Workout Plans: {profileData?.workoutPlans?.length}</p>
+                </div>
+                <div className="text-text ml-5 mt-5">
+                  <p>{profileData.bio}</p>
                 </div>
               </div>
             </div>
@@ -250,11 +254,11 @@ export default function ProfilePage() {
                           ></img>
                         )}
                         <div className=" flex ml-10 mt-5 gap-40 text-gray-700">
-                          <div>
+                          {/* <div>
                             <span className="material-symbols-outlined text-gray-700 text-2xl">
                               chat_bubble_outline
                             </span>
-                          </div>
+                          </div> */}
                           <div className="flex flex-row justify-center items-center hover:text-pink-500 group">
                             {post.likes > 0 ? (
                               userData?.likedPosts?.some(

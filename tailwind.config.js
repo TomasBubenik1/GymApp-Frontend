@@ -9,7 +9,7 @@ module.exports = {
         mL: "500px",
       },
       fontSize: {
-        navIcons: "28px",
+        navIcons: "36px",
         half2xl: "22px",
       },
       colors: {

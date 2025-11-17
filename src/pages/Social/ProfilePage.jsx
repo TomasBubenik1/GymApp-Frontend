@@ -13,6 +13,7 @@ export default function ProfilePage() {
   const [userData, setUserData] = useState([]);
   const [profileData, setProfileData] = useState([]);
   const [posts, setAllPosts] = useState([]);
+  const [notificationCount, setNotificationCount] = useState(0);
 
   const [friendStatus, setFriendStatus] = useState({
     status: null,
@@ -51,8 +52,25 @@ export default function ProfilePage() {
         }
       );
       setUserData(response.data.UserData);
+      setNotificationCount(response.data.UserData.receivedNotifications.length);
+
     } catch (error) {
       console.error("Error fetching logged in user data:", error);
+    }
+  }
+
+  async function handleRemoveFriend() {
+    console.log("klik");
+    if (!profileData.id) return console.log("No profile Id");
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/removefriend",
+        { friendId: profileData.id },
+        { withCredentials: true }
+      );
+      console.log(response);
+    } catch (error) {
+      console.error("There was error removing friend:", error);
     }
   }
 
@@ -99,7 +117,7 @@ export default function ProfilePage() {
 
   return (
     <div className="flex bg-backgroundcolor w-full">
-      <Navbar currentSite={"profile"} username={userData.username} />
+      <Navbar currentSite={"profile"} username={userData.username} notificationCount={notificationCount} />
       <main className=" grow bg-backgroundcolor">
         <nav className="w-full h-20 flex justify-between items-center bg-backgroundcolor border-b border-gray-700">
           <h1 className="text-3xl text-text font-bold ml-5">{username}</h1>
@@ -134,14 +152,14 @@ export default function ProfilePage() {
                         <div className="flex justify-center items-center gap-5 ml-5 bg-backgroundcolor p-2 rounded-lg">
                           {" "}
                           <button
-                            onClick={() => handleAcceptFriendRequest()} // This function should accept the friend request
-                            className="bg-foreground text-text rounded-lg w-48 h-9 text-base font-bold justify-center self-center text-center" // Adjusted width for fitting within the container
+                            onClick={() => handleAcceptFriendRequest()}
+                            className=" bg-accent text-text rounded-lg w-48 h-9 text-base font-bold justify-center self-center text-center" 
                           >
                             Accept Friend Request
                           </button>
                           <button
-                            onClick={() => handleDeclineFriendRequest()} // This function should decline the friend request
-                            className="bg-foreground text-text rounded-lg w-48 h-9 text-base font-bold justify-center self-center text-center" // Adjusted width for fitting within the container
+                            onClick={() => handleDeclineFriendRequest()}
+                            className="bg-foreground text-text rounded-lg w-48 h-9 text-base font-bold justify-center self-center text-center"
                           >
                             Decline Friend Request
                           </button>
@@ -149,7 +167,7 @@ export default function ProfilePage() {
                       )
                     ) : friendStatus && friendStatus.status == "accepted" ? (
                       <button
-                        onClick={handleFriendAdd}
+                        onClick={() => handleRemoveFriend()}
                         className="text-text rounded-lg w-48 ml-5 h-9 text-base font-bold justify-center self-center text-center bg-foreground"
                       >
                         Remove Friend

@@ -5,6 +5,7 @@ import { useState } from "react";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
+import Popup from "./PopUpAlert";
 
 export default function Exercises({
   exercises,
@@ -12,39 +13,15 @@ export default function Exercises({
   workoutPlanId,
   userId,
 }) {
-  const [open, setOpen] = useState(false);
-  const [message, setMessage] = useState("");
-  const [type, setType] = useState("info");
   const [popup, setPopup] = useState({
     open: false,
     message: "",
     severity: "info", // Can be 'error', 'warning', 'info', 'success'
-    title: null,
   });
 
   const handleClose = () => {
     setPopup({ ...popup, open: false });
   };
-
-  function Popup({ open, handleClose, message, severity }) {
-    return (
-      <Snackbar
-        open={open}
-        autoHideDuration={2000}
-        onClose={handleClose}
-        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-      >
-        <MuiAlert
-          variant="filled"
-          onClose={handleClose}
-          severity={severity}
-          sx={{ width: "100%" }}
-        >
-          {message}
-        </MuiAlert>
-      </Snackbar>
-    );
-  }
 
   if (loading) {
     return <h2>Loading</h2>;
@@ -113,7 +90,10 @@ export default function Exercises({
               {exercise.level.charAt(0).toUpperCase() + exercise.level.slice(1)}
             </p>
             <div className="flex gap-3">
-              <button className="text-center font-semibold bg-accent bg-opacity-30 text-accentGlow hover:bg-accentGlow hover:bg-opacity-40 p-2 self-center w-full rounded-md cursor-pointer">
+              <button
+                className="text-center font-semibold bg-accent bg-opacity-30 text-accentGlow hover:bg-accentGlow hover:bg-opacity-40 p-2 self-center w-full rounded-md cursor-pointer"
+                onClick={() => handleAddIntoExercisePlan(exercise.id)}
+              >
                 Add
               </button>
               <Link
@@ -123,6 +103,12 @@ export default function Exercises({
                 Details
               </Link>
             </div>
+            <Popup
+              open={popup.open}
+              handleClose={handleClose}
+              message={popup.message}
+              severity={popup.severity}
+            />
           </div>
         );
       })}

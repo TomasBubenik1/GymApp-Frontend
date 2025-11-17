@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Register() {
   const [email, setEmail] = useState("");
@@ -7,6 +8,7 @@ export default function Register() {
   const [pageProgress, setPageProgress] = useState(1);
   const [emailTaken, setEmailTaken] = useState(false);
   const [usernameTaken, setUsernameTaken] = useState(false);
+  const navigate = useNavigate();
 
   const [userData, setUserData] = useState({
     email: "",
@@ -73,11 +75,15 @@ export default function Register() {
   async function handleRegisterSubmit() {
     try {
       const res = await axios.post("http://localhost:5000/api/register", {
-        email: email,
+        email: userData.email,
         username: userData.username,
         password: userData.password,
-        nickname: userData.nickname,
+        nickname: userData.username,
+        currentWeight: parseFloat(userData.currentWeight),
+        goalWeight: parseFloat(userData.goalWeight),
+        height: parseFloat(userData.height),
       });
+      navigate("../login");
     } catch (error) {
       console.error("There was error creating user:", error);
     }
@@ -191,12 +197,15 @@ export default function Register() {
             <div className="flex flex-col text-gray-400 py-2 mt-3">
               <label className="flex">Current Weight</label>
               <input
-                onChange={(e) => handleDataChange("currentWeight", e)}
+                onChange={(e) =>
+                  handleDataChange("currentWeight", e.target.value)
+                }
                 type="p"
                 name="currentWeight"
                 id="currentWeight"
                 placeholder=""
                 defaultValue={""}
+                value={userData.currentWeight}
                 className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block  p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 required="@"
               ></input>
@@ -204,10 +213,11 @@ export default function Register() {
             <div className="flex flex-col text-gray-400 py-2 mt-5">
               <label className="flex">Goal Weight</label>
               <input
-                onChange={(e) => handleDataChange("password", e)}
+                onChange={(e) => handleDataChange("goalWeight", e.target.value)}
                 type="text"
                 name="goalWeight"
                 id="goalWeight"
+                value={userData.goalWeight}
                 placeholder=""
                 className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 required=""
@@ -216,10 +226,11 @@ export default function Register() {
             <div className="flex flex-col text-gray-400 py-2 mt-5">
               <label className="flex">Height</label>
               <input
-                onChange={(e) => handleDataChange("height", e)}
+                onChange={(e) => handleDataChange("height", e.target.value)}
                 type="text"
                 name="height"
                 id="height"
+                value={userData.height}
                 placeholder=""
                 className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 required=""

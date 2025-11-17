@@ -1,7 +1,7 @@
 import axios from "axios";
 import React from "react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -78,9 +78,9 @@ export default function Login() {
               marginTop: "1rem",
             }}
           >
-            <p className="text-blue-900" style={{ alignSelf: "flex-end" }}>
-              Forgot password?
-            </p>
+            <Link className="text-blue-900 self-end" to={"../register"}>
+              Don't have account yet?
+            </Link>
           </div>
           <button
             disabled={email.includes("@") && password ? false : true}

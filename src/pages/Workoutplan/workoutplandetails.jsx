@@ -26,6 +26,7 @@ export default function WorkoutPlanDetails() {
     upperBody: 0,
     core: 0,
   });
+  const [notificationCount, setNotificationCount] = useState(0);
 
   let { workoutPlanId } = useParams();
 
@@ -372,8 +373,8 @@ export default function WorkoutPlanDetails() {
         }
       );
       setUserData(response.data.UserData);
-      setWorkoutPlans(response.data.exercisePlans);
-      setUserExerciseData(response.data.userExerciseData);
+      setWorkoutPlans(response.data.UserData.workoutPlans);
+      setNotificationCount(response.data.UserData.receivedNotifications.length);
     } catch (error) {
       console.error("Error fetching logged in user data:", error);
     }

@@ -1,24 +1,26 @@
+// Popup.js
+import React from "react";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
-import React from "react";
 
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
-
-export default function Popup(props) {
-  const { open, handleClose, message, type, title } = props;
-
+function Popup({ open, handleClose, message, severity }) {
   return (
     <Snackbar
       open={open}
-      autoHideDuration={6000}
+      autoHideDuration={2000}
       onClose={handleClose}
       anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
     >
-      <Alert onClose={handleClose} severity={type} sx={{ width: "100%" }}>
+      <MuiAlert
+        variant="filled"
+        onClose={handleClose}
+        severity={severity}
+        sx={{ width: "100%" }}
+      >
         {message}
-      </Alert>
+      </MuiAlert>
     </Snackbar>
   );
 }
+
+export default Popup;

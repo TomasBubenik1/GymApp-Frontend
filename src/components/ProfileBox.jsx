@@ -11,10 +11,6 @@ export default function ProfileBox({ nickname, profilepic, username }) {
     setDropdownOpen(!dropdownOpen);
   }
 
-  const handleProfileClick = () => {
-    console.log("Profile picture clicked");
-  };
-
   async function handleLogoutClick() {
     try {
       const res = axios
@@ -75,7 +71,7 @@ export default function ProfileBox({ nickname, profilepic, username }) {
               onClick={() => handleLogoutClick()}
               className=" flex flex-row px-4 py-2 rounded-b-lg cursor-pointer hover:bg-foregroundhover hover:bg-opacity-70 hover:text-text"
             >
-              <span className="material-symbols-outlined text-navIcon" >
+              <span className="material-symbols-outlined text-navIcon">
                 logout
               </span>
               <p>Log out</p>

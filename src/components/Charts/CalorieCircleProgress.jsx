@@ -130,12 +130,12 @@ function CalorieProgress({ initialConsumedCalories, initialGoalCalories }) {
             )}/${Math.round(goalCalories)}`}</p>
           </div>
         </div>
-        <div
-          className="flex justify-center items-center rounded-full h-[30px] w-[30px] p-2 mt-8 border ml-2 cursor-pointe"
-          onClick={() => changeCalories(100)}
+        <button
+          className="flex justify-center items-center rounded-full h-[30px] w-[30px] p-2 mt-8 border ml-2 cursor-pointe group-disabled:opacity-50"
+          onClick={() => changeCalories(100)} disabled={consumedCalories+100>goalCalories}
         >
-          <p className="text-[28px] text-text font-semibold mb-[5px]">+</p>
-        </div>
+          <p className="text-[28px] text-text font-semibold mb-[5px] group-disabled:opacity-50">+</p>
+        </button>
       </div>
       {isEditing ? (
         <div className="mt-2 flex items-center text-text font-semibold  ml-4">

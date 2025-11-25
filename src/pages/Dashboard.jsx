@@ -15,8 +15,12 @@ function Dashboard() {
 
   const [calorieDate, setCalorieDate] = useState("");
   const [calorieData, setCalorieData] = useState([]);
-  const [notificationCount, setNotificationCount] = useState(0);
-
+  const [editingWeight, setEditingWeight] = useState(false);
+  const [editingGoalWeight, setEditingGoalWeight] = useState(false);
+  const [editingHeight, setEditingHeight] = useState(false);
+  const [weight, setWeight] = useState(0);
+  const [height, setHeight] = useState(0);
+  const [goalWeight, setGoalWeight] = useState(0);
 
   useEffect(() => {
     fetchLoggedInData();
@@ -24,6 +28,43 @@ function Dashboard() {
     setCalorieDate(today);
     fetchDailyCalories(today);
   }, []);
+
+  function handleWeightInputChange(e) {
+    setWeight(e.target.value);
+    const input = e.target;
+    input.style.width = (input.value.length + 2) * 8 + "px";
+  }
+  function handleGoalWeightInputChange(e) {
+    setGoalWeight(e.target.value);
+    const input = e.target;
+    input.style.width = (input.value.length + 2) * 8 + "px";
+  }
+
+  function handleHeightInputChange(e) {
+    setHeight(e.target.value);
+    const input = e.target;
+    input.style.width = (input.value.length + 2) * 8 + "px";
+  }
+
+  async function handleBodyMassSubmit() {
+    try {
+      setEditingHeight(false);
+      setEditingWeight(false);
+      setEditingGoalWeight(false);
+
+      const res = await axios.post(
+        "http://localhost:5000/api/handlebodymasschange",
+        {
+          newCurrentWeight: weight,
+          newGoalWeight: goalWeight,
+          newHeight: height,
+        },
+        { withCredentials: true }
+      );
+    } catch (error) {
+      console.error("There was error changing weight:", error);
+    }
+  }
 
   async function fetchDailyCalories(date) {
     try {
@@ -38,11 +79,11 @@ function Dashboard() {
       const data = await axios.post(
         "http://localhost:5000/api/getcalorieintake",
         {
-          date: dateObj, // Ensuring the date is in ISO string format
+          date: dateObj,
         },
         { withCredentials: true }
       );
-      setCalorieData(data.data); // Make sure to access the data property of the axios response
+      setCalorieData(data.data);
     } catch (error) {
       console.error("Error fetching daily calorie intake:", error);
       alert("Failed to fetch calorie data.");
@@ -58,8 +99,9 @@ function Dashboard() {
         }
       );
       setUserData(response.data.UserData);
-      setNotificationCount(response.data.UserData.receivedNotifications.length);
-
+      setWeight(response.data.UserData.currentWeight);
+      setHeight(response.data.UserData.height);
+      setGoalWeight(response.data.UserData.goalWeight);
     } catch (error) {
       console.error("Error fetching logged in user data:", error);
     }
@@ -69,7 +111,7 @@ function Dashboard() {
   return (
     <div className="flex flex-col">
       <div className="flex bg-backgroundcolor w-full">
-        <Navbar currentSite={"dashboard"} username={userData.username} notificationCount={notificationCount} />
+        <Navbar currentSite={"dashboard"} username={userData.username} />
         <main className=" grow bg-backgroundcolor">
           <nav className="w-full h-20 flex justify-between items-center bg-backgroundcolor border-b border-gray-700">
             <h1 className="text-3xl text-text font-bold ml-5">Dashboard</h1>
@@ -93,24 +135,114 @@ function Dashboard() {
               initialGoalCalories={calorieData.goalCalories}
             ></CalorieProgress>
             <div className="bg-foreground relative p-5 rounded-lg ml-5 flex flex-col items-center justify-center max-w-56 mt-16 w-56 shadow-lg h-[200px]">
-              <div className=" flex flex-row">
+              <p className="text-text absolute top-5 font-bold">Height:</p>
+              <div className="flex flex-row">
                 <span className="material-symbols-outlined pr-4 text-white mt-4">
                   straighten
                 </span>
-                <p className="text-text text-2xl mt-2">{userData.height}</p>
+                {editingHeight ? (
+                  <input
+                    onChange={(e) => handleHeightInputChange(e)}
+                    className=" bg-transparent w-14 border-white border text-xl mt-2 rounded-lg text-text"
+                    value={height}
+                  ></input>
+                ) : (
+                  <div className="flex flex-row">
+                    <p className="text-text text-2xl mt-2">{height}</p>
+                  </div>
+                )}
                 <p className="text-text opacity-50 mt-4 ml-1">cm</p>
               </div>
+              {editingHeight ? (
+                <div
+                  className="absolute bottom-1 right-5 text-accentGlow opacity-75 hover:opacity-100 cursor-pointer"
+                  onClick={() => handleBodyMassSubmit()}
+                >
+                  <span className="material-symbols-outlined text-[26px]">
+                    check
+                  </span>
+                </div>
+              ) : (
+                <p
+                  onClick={() => setEditingHeight(true)}
+                  className="bottom-3 right-5 opacity-50 absolute text-text font-semibold hover:opacity-100 cursor-pointer"
+                >
+                  Edit
+                </p>
+              )}
             </div>
+
             <div className="bg-foreground relative p-5 rounded-lg ml-5 flex flex-col items-center justify-center max-w-56 mt-16 w-56 shadow-lg h-[200px]">
+              <p className="text-text absolute top-5 font-bold">
+                Current Weight:
+              </p>
               <div className=" flex flex-row">
                 <span className="material-symbols-outlined pr-4 text-white mt-4">
                   scale
                 </span>
-                <p className="text-text text-2xl mt-2">
-                  {userData.currentWeight}
-                </p>
+                {editingWeight ? (
+                  <input
+                    onChange={(e) => handleWeightInputChange(e)}
+                    className=" bg-transparent w-14 border-white border text-xl mt-2 rounded-lg text-text"
+                    value={weight}
+                  ></input>
+                ) : (
+                  <p className="text-text text-2xl mt-2">{weight}</p>
+                )}
                 <p className="text-text opacity-50 mt-4 ml-1">kg</p>
               </div>
+              {editingWeight ? (
+                <div
+                  className="absolute bottom-1 right-5 text-accentGlow opacity-75 hover:opacity-100 cursor-pointer"
+                  onClick={() => handleBodyMassSubmit()}
+                >
+                  <span className="material-symbols-outlined text-[26px]">
+                    check
+                  </span>
+                </div>
+              ) : (
+                <p
+                  onClick={() => setEditingWeight(true)}
+                  className=" bottom-3 right-5 opacity-50 absolute text-text font-semibold hover:opacity-100 cursor-pointer"
+                >
+                  Edit
+                </p>
+              )}
+            </div>
+            <div className="bg-foreground relative p-5 rounded-lg ml-5 flex flex-col items-center justify-center max-w-56 mt-16 w-56 shadow-lg h-[200px]">
+              <p className="text-text absolute top-5 font-bold">Goal Weight:</p>
+              <div className=" flex flex-row">
+                <span className="material-symbols-outlined text-[30px] pr-3 text-white mt-3">
+                  emoji_events
+                </span>
+                {editingGoalWeight ? (
+                  <input
+                    onChange={(e) => handleGoalWeightInputChange(e)}
+                    className=" bg-transparent w-14 border-white border text-xl mt-2 rounded-lg text-text"
+                    value={goalWeight}
+                  ></input>
+                ) : (
+                  <p className="text-text text-2xl mt-2">{goalWeight}</p>
+                )}
+                <p className="text-text opacity-50 mt-4 ml-1">kg</p>
+              </div>
+              {editingGoalWeight ? (
+                <div
+                  className="absolute bottom-1 right-5 text-accentGlow opacity-75 hover:opacity-100 cursor-pointer"
+                  onClick={() => handleBodyMassSubmit()}
+                >
+                  <span className="material-symbols-outlined text-[26px]">
+                    check
+                  </span>
+                </div>
+              ) : (
+                <p
+                  onClick={() => setEditingGoalWeight(true)}
+                  className=" bottom-3 right-5 opacity-50 absolute text-text font-semibold hover:opacity-100 cursor-pointer"
+                >
+                  Edit
+                </p>
+              )}
             </div>
           </div>
           <div className="ml-5">

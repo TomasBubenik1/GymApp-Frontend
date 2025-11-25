@@ -1,27 +1,41 @@
 import { Link } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import Cookies from "universal-cookie";
 
-function Navbar({ currentSite, username, notificationCount }) {
-  async function getNotifications() {
+function Navbar({ currentSite, username }) {
+  const cookies = new Cookies();
+
+  const [notificationCount, setNotificationCount] = useState(0);
+
+  async function fetchLoggedInData() {
     try {
-      const res = await axios.post(
-        "http://localhost:5000/api/getfriendreqnotifications",
-        {},
-        { withCredentials: true }
+      const response = await axios.get(
+        "http://localhost:5000/api/getloggedinuser",
+        {
+          withCredentials: true,
+        }
       );
-      console.log("Notifications:", res);
+
+      let unreadCount = 0;
+
+      console.log(
+        "Notifications:",
+        response.data.UserData.receivedNotifications
+      );
+      response.data.UserData.receivedNotifications.forEach((notification) => {
+        if (notification.read == false) {
+          unreadCount += 1;
+        }
+      });
+      setNotificationCount(unreadCount);
     } catch (error) {
-      console.error("There was error getting notification count:", error);
+      console.error("Error fetching logged in user data:", error);
     }
   }
   useEffect(() => {
-    getNotifications();
+    fetchLoggedInData();
   }, []);
-
-  const cookies = new Cookies();
-
   return (
     <nav className=" lg:w-[300px] 2xl:w-[500px] h-screen sticky top-0 bg-backgroundcolor h-f flex flex-col items-center text text-2xl border-r border-gray-700">
       <a className="text-3xl font-bold text-accent mt-5 text-center">
@@ -94,7 +108,7 @@ function Navbar({ currentSite, username, notificationCount }) {
             <span className="mr-3 material-symbols-outlined text-navIcons text-text transition duration-150 ease-in  ">
               list_alt
             </span>
-            Workout Plans
+            Workout Plan
           </Link>
         )}
         {currentSite == "exercises" ? (
@@ -123,25 +137,20 @@ function Navbar({ currentSite, username, notificationCount }) {
         {currentSite == "notifications" ? (
           <Link
             className="bg-accent w-full p-2 bg-opacity-20 rounded-lg flex  text-accent transition duration-150 ease-in "
-            to={"/exercises"}
+            to={"/notifications"}
             title="dashboard"
           >
             <div className="relative flex flex-col">
-              <span className="material-symbols-outlined text-navIcons transition duration-150 ease-in bg-accent  ">
+              <span className="material-symbols-outlined text-navIcons transition duration-150 ease-in  ">
                 notifications
               </span>
-              {notificationCount > 0 && (
-                <p className="absolute top-0 right-0 text-xs bg-accent text-white rounded-full px-1.5 py-0.5">
-                  {notificationCount}
-                </p>
-              )}
             </div>
             Notifications
           </Link>
         ) : (
           <Link
             className="rounded-lg p-2 flex w-full text-text transition duration-150 ease-in hover:shadow-2xl hover:bg-accent hover:bg-opacity-25"
-            to="/exercises"
+            to="/notifications"
             title="dashboard"
           >
             <div className="relative flex flex-col">

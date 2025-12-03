@@ -30,7 +30,6 @@ function SingleExerciseChart() {
           withCredentials: true,
         }
       );
-      console.log("Laetst Exercise:", response);
 
       setLatestEditedExerciseId(response.data.latestExerciseId.exerciseId);
       setLatestEditedExerciseName(response.data.latestExerciseId.exercise.name);
@@ -69,6 +68,7 @@ function SingleExerciseChart() {
     Reps: exerciseData.currentExerciseData?.reps,
     Sets: exerciseData.currentExerciseData?.sets,
   };
+  
   const historyEntries = exerciseData.historyExerciseData
     ? exerciseData.historyExerciseData.map((data, i) => ({
         name: format(new Date(data.createdAt), "dd/MM"),
@@ -80,9 +80,8 @@ function SingleExerciseChart() {
 
   const chartData = [...historyEntries, latestEntry];
 
-  console.log(exerciseData);
   return (
-    <div className=" inline-block rounded-xl p-7 shadow-md bg-foreground mt-5">
+    <div className=" inline-block rounded-xl p-7 shadow-md bg-foreground mt-5 mb-10 ml-10">
       <p className="text-text font-semibold mb-3 text-lg">Recent Exercise</p>
       <p className="text-text text-3xl font-semibold">
         {latestEditedExerciseName}

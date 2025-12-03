@@ -111,6 +111,7 @@ export default function ProfilePage() {
       console.error(error);
     }
   }
+  console.log("kokot data:", userData);
 
   return (
     <div className="flex bg-backgroundcolor w-full">

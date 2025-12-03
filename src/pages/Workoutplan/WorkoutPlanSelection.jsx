@@ -84,7 +84,7 @@ export default function WorkoutPlans() {
       console.error("Error fetching logged in user data:", error);
     }
   }
-  
+
   useEffect(() => {
     fetchLoggedInData();
   }, []);
@@ -92,10 +92,7 @@ export default function WorkoutPlans() {
   return (
     <div className="">
       <div className="flex bg-backgroundcolor w-full">
-        <Navbar
-          currentSite={"workoutplans"}
-          username={userData?.username}
-        />
+        <Navbar currentSite={"workoutplans"} username={userData?.username} />
         <main className="flex-grow bg-backgroundcolor h-full">
           <nav className="w-full h-20 flex justify-between items-center bg-backgroundcolor border-b border-gray-700">
             {Object.keys(selectedWorkoutPlan).length > 1 ? (
@@ -130,7 +127,7 @@ export default function WorkoutPlans() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 px-4">
                 {workoutPlans.map((workoutplan, i) => (
                   <div
-                    className="flex flex-col border shadow-lg border-accent rounded-lg overflow-hidden cursor-pointer hover:transition duration-500 bg-foreground xl:h-[270px] 2xl:h-[310px] 2xl:w-[450px] "
+                    className="flex flex-col border shadow-lg border-accent rounded-lg overflow-hidden cursor-pointer hover:transition duration-500 bg-foreground xl:w-[350px] xl:h-[270px] 2xl:h-[310px] 2xl:w-[450px] "
                     key={i}
                   >
                     <Link to={`../workoutdetails/${workoutplan.id}`}>
@@ -224,23 +221,9 @@ export default function WorkoutPlans() {
                 <textarea
                   maxLength={255}
                   onChange={handleDescriptionChange}
-                  className="bg-[#18181B] border rounded-md  self-center text-white w-[80%] h-[20%]"
+                  className="bg-[#18181B] border rounded-md  self-center text-white w-[80%] h-[1000px] resize-none"
                   placeholder="Description"
                 ></textarea>
-
-                <div className=" flex flex-row justify-center mt-5">
-                  <p className="text-text mt-2 text-lg font-semibold">
-                    Private:
-                  </p>
-                  <Checkbox
-                    {...label}
-                    color="success"
-                    sx={{
-                      color: "#46B635",
-                      marginTop: "4px",
-                    }}
-                  />
-                </div>
                 <div className="flex grow w-full justify-end items-end gap-2">
                   <button
                     className="mb-5 rounded-md text-white text-sm font-semibold bg-[#2f2f35] w-20 h-8"

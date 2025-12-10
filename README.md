@@ -1,70 +1,43 @@
-# Getting Started with Create React App
+# GymApp
+This GymApp is using React for the frontend and Node.js with Express for the backend. The app uses PostgreSQL as 
+the database and Prisma as the ODM. The app uses bcrypt for password hashing. Tailwind CSS 
+is used for responsive design.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Installation
+1. Clone the repository
+2. Run `npm install` in the /backend directory
+3. Run `npm install` in the /frontend directory
+4. Create .ENV file in the /backend directory and fill out these variables so they match with your PG Database:
+   
+`
+PG_USER = ' '
+PG_HOST = ' '
+PG_DATABASE= ' '
+PG_PASSWORD= ' '
+PG_PORT = ' '
+`
 
-## Available Scripts
+5. Run `npm run dev` in the /backend directory to initialize the backend and API.
+6. Run `npm start` in the /frontend directory
 
-In the project directory, you can run:
 
-### `npm start`
+## Usage
+The app will be running on http://localhost:3000. To simulate the communication between users, open the app in two different browsers, use two different devices or use the incognito mode in your browser.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Features
+- Creating/Deleting workout plans
+- Exercise filtering by parameters ( primary muscle,secondary muscle,equipment,...) or by name
+- Adding exercises into your own workout plans
+- Changing your exercise parameters
+- Creating posts with images and text
+- Adding friends and making workout plans visible only to them
+- Liking posts and notifications
+- Editable profile picture,name,bio... in settings
+- User search bar
+- Dashboard page with showcase of your progress through graphs.
+- Daily calorie tracker
+- Weight tracker
+- Responsive design
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## License
+[MIT](https://choosealicense.com/licenses/mit/)

@@ -2,22 +2,191 @@ import { useState, useEffect } from "react";
 import Navbar from "../../components/Navbar";
 import axios from "axios";
 import Exercises from "../../components/Exercises";
-import DropdownMenuFilter from "../../components/Dropdown";
 import ProfileBox from "../../components/ProfileBox";
 import { useLocation } from "react-router-dom";
 import Footer from "../../components/Footer";
 
-export default function ExercisePage() {
-  const [openSkillLevel, setOpenSkillLevel] = useState(false);
-  const [openForce, setOpenForce] = useState(false);
-  const [openEquipment, setOpenEquipment] = useState(false);
-  const [openPrimaryMuscle, setOpenPrimaryMuscle] = useState(false);
-  const [openCategory, setOpenCategory] = useState(false);
-  const [openWorkoutPlans, setOpenWorkoutPlans] = useState(false);
-  const [openCreateDialog, setOpenCreateDialog] = useState(false);
-  const [searchBarText, setSearchbarText] = useState(undefined);
-  const [notificationCount, setNotificationCount] = useState(0);
+/* ── Compact inline dropdown ── */
+function FilterPill({ label, icon, selectedOption, options, onSelect }) {
+  const [open, setOpen] = useState(false);
+  const active = selectedOption !== null && selectedOption !== undefined && selectedOption !== "";
 
+  return (
+    <div className="relative">
+      <button
+        onClick={() => setOpen(!open)}
+        className={`flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-medium transition-all duration-200
+          ${active
+            ? "bg-accent/15 border-accent/50 text-accent shadow-[0_0_12px_rgba(70,182,53,0.12)]"
+            : "bg-white/[0.03] border-white/[0.1] text-white/50 hover:border-white/20 hover:text-white/75"
+          }`}
+      >
+        <span className="material-symbols-outlined text-[16px]">{icon}</span>
+        <span>{active ? selectedOption : label}</span>
+        <span className={`material-symbols-outlined text-[14px] transition-transform duration-200 ${open ? "rotate-180" : ""}`}>
+          expand_more
+        </span>
+      </button>
+
+      {open && (
+        <>
+          {/* Backdrop */}
+          <div className="fixed inset-0 z-10" onClick={() => setOpen(false)} />
+          <div className="absolute top-[calc(100%+8px)] left-0 z-20 min-w-[160px] bg-[#111] border border-white/[0.1] rounded-xl shadow-[0_16px_48px_rgba(0,0,0,0.7)] overflow-hidden">
+            {active && (
+              <button
+                onClick={() => { onSelect(null); setOpen(false); }}
+                className="w-full flex items-center gap-2 px-4 py-2.5 text-left text-[12px] font-semibold tracking-[1.5px] uppercase text-accent/70 hover:bg-white/[0.04] border-b border-white/[0.06] transition-colors"
+              >
+                <span className="material-symbols-outlined text-[14px]">close</span>
+                Clear
+              </button>
+            )}
+            <div className="max-h-60 overflow-y-auto py-1">
+              {options.map((option, i) => (
+                <button
+                  key={i}
+                  onClick={() => { onSelect(option === selectedOption ? null : option); setOpen(false); }}
+                  className={`w-full px-4 py-2.5 text-left text-sm transition-colors duration-150
+                    ${option === selectedOption
+                      ? "text-accent font-semibold bg-accent/[0.08]"
+                      : "text-white/60 hover:text-text hover:bg-white/[0.04]"
+                    }`}
+                >
+                  {option}
+                </button>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+/* ── Workout plan pill ── */
+function WorkoutPlanPill({ selectedWorkoutPlan, workoutPlans, onSelect, onCreateNew }) {
+  const [open, setOpen] = useState(false);
+  const [createOpen, setCreateOpen] = useState(false);
+  const [title, setTitle] = useState("");
+  const [desc, setDesc] = useState("");
+  const active = !!selectedWorkoutPlan;
+
+  return (
+    <div className="relative">
+      <button
+        onClick={() => setOpen(!open)}
+        className={`flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-medium transition-all duration-200
+          ${active
+            ? "bg-accent/15 border-accent/50 text-accent shadow-[0_0_12px_rgba(70,182,53,0.12)]"
+            : "bg-white/[0.03] border-white/[0.1] text-white/50 hover:border-white/20 hover:text-white/75"
+          }`}
+      >
+        <span className="material-symbols-outlined text-[16px]">list_alt</span>
+        <span className="max-w-[120px] truncate">{active ? selectedWorkoutPlan : "Workout Plan"}</span>
+        <span className={`material-symbols-outlined text-[14px] transition-transform duration-200 ${open ? "rotate-180" : ""}`}>expand_more</span>
+      </button>
+
+      {open && (
+        <>
+          <div className="fixed inset-0 z-10" onClick={() => setOpen(false)} />
+          <div className="absolute top-[calc(100%+8px)] left-0 z-20 w-52 bg-[#111] border border-white/[0.1] rounded-xl shadow-[0_16px_48px_rgba(0,0,0,0.7)] overflow-hidden">
+            {active && (
+              <button
+                onClick={() => { onSelect(null, null); setOpen(false); }}
+                className="w-full flex items-center gap-2 px-4 py-2.5 text-left text-[12px] font-semibold tracking-[1.5px] uppercase text-accent/70 hover:bg-white/[0.04] border-b border-white/[0.06] transition-colors"
+              >
+                <span className="material-symbols-outlined text-[14px]">close</span>
+                Clear
+              </button>
+            )}
+            <div className="max-h-52 overflow-y-auto py-1">
+              {workoutPlans.map((wp, i) => (
+                <button
+                  key={i}
+                  onClick={() => { onSelect(wp.title, wp.id); setOpen(false); }}
+                  className={`w-full px-4 py-2.5 text-left text-sm truncate transition-colors duration-150
+                    ${wp.title === selectedWorkoutPlan
+                      ? "text-accent font-semibold bg-accent/[0.08]"
+                      : "text-white/60 hover:text-text hover:bg-white/[0.04]"
+                    }`}
+                >
+                  {wp.title}
+                </button>
+              ))}
+            </div>
+            <div className="border-t border-white/[0.06] p-2">
+              <button
+                onClick={() => { setCreateOpen(true); setOpen(false); }}
+                className="w-full flex items-center gap-2 px-3 py-2 text-sm text-accent/80 hover:text-accent hover:bg-accent/[0.06] rounded-lg transition-colors"
+              >
+                <span className="material-symbols-outlined text-[16px]">add</span>
+                Create new plan
+              </button>
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* Inline create dialog */}
+      {createOpen && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/70 backdrop-blur-sm">
+          <div className="w-[420px] bg-[#0d0d0d] border border-white/[0.09] rounded-2xl shadow-[0_32px_80px_rgba(0,0,0,0.8)] overflow-hidden">
+            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent/40 to-transparent" />
+            <div className="flex items-center justify-between px-6 py-5 border-b border-white/[0.06]">
+              <h2 className="font-bebas text-xl text-text tracking-[2px]">CREATE WORKOUT PLAN</h2>
+              <button onClick={() => setCreateOpen(false)} className="text-white/30 hover:text-white/60 transition-colors">
+                <span className="material-symbols-outlined text-[20px]">close</span>
+              </button>
+            </div>
+            <div className="p-6 flex flex-col gap-5">
+              <div className="flex flex-col gap-2">
+                <label className="text-[11px] font-semibold tracking-[2px] uppercase text-white/40">Title</label>
+                <input
+                  maxLength={35}
+                  type="text"
+                  placeholder="My workout plan"
+                  value={title}
+                  onChange={e => setTitle(e.target.value)}
+                  className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-4 py-3 text-text text-sm outline-none focus:border-accent/50 focus:shadow-[0_0_0_3px_rgba(70,182,53,0.07)] transition-all placeholder:text-white/20"
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label className="text-[11px] font-semibold tracking-[2px] uppercase text-white/40">Description</label>
+                <textarea
+                  maxLength={255}
+                  placeholder="Optional description..."
+                  value={desc}
+                  onChange={e => setDesc(e.target.value)}
+                  rows={3}
+                  className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-4 py-3 text-text text-sm outline-none focus:border-accent/50 focus:shadow-[0_0_0_3px_rgba(70,182,53,0.07)] transition-all placeholder:text-white/20 resize-none"
+                />
+              </div>
+              <div className="flex gap-3 pt-1">
+                <button
+                  onClick={() => setCreateOpen(false)}
+                  className="flex-1 py-3 rounded-lg border border-white/[0.08] text-white/50 text-sm font-semibold hover:border-white/20 hover:text-white/70 transition-all"
+                >
+                  Cancel
+                </button>
+                <button
+                  disabled={title.length < 3}
+                  onClick={() => { onCreateNew(title, desc); setCreateOpen(false); setTitle(""); setDesc(""); }}
+                  className="flex-1 py-3 rounded-lg bg-accent text-black text-sm font-bold tracking-[1px] disabled:opacity-35 disabled:cursor-not-allowed hover:bg-[#52cc3f] transition-all"
+                >
+                  Create
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ── Main page ── */
+export default function ExercisePage() {
   const location = useLocation();
 
   const [selectedOptions, setSelectedOptions] = useState({
@@ -30,430 +199,273 @@ export default function ExercisePage() {
 
   const [selectedWorkoutPlan, selectWorkoutPlan] = useState(null);
   const [selectedWorkoutPlanId, selectWorkoutPlanId] = useState(null);
-
   const [workoutPlanTitle, setWorkoutTitle] = useState("");
   const [workoutPlanDescription, setWorkoutDescription] = useState("");
-
+  const [searchBarText, setSearchbarText] = useState(undefined);
   const [exercises, setExercises] = useState([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [exercisesPerPage, setExercisesPerPage] = useState(30);
+  const [exercisesPerPage] = useState(30);
   const [userData, setUserData] = useState("user");
   const [workoutPlans, setWorkoutPlans] = useState([]);
-
-  function handleSearchbardChange(e) {
-    setSearchbarText(e.target.value);
-  }
-
-  useEffect(() => {
-    fetchSelectedExercises();
-  }, [searchBarText, currentPage]);
-
-  const handleTitleChange = (e) => {
-    setWorkoutTitle(e.target.value);
-  };
-
-  const handleDescriptionChange = (e) => {
-    setWorkoutDescription(e.target.value);
-  };
+  const [mounted, setMounted] = useState(false);
 
   const skillLevels = ["Beginner", "Intermediate", "Expert"];
-
   const forces = ["Push", "Pull", "Static"];
+  const categories = ["Strength", "Streching", "Plyometrics", "Strongman", "Powerlifting", "Cardio", "Crossfit", "Olympic Weightlifting", "Weighted Bodyweight", "Assisted bodyweight"];
+  const muscles = ["Abdominals", "Hamstrings", "Calves", "Shoulders", "Adductors", "Glutes", "Quadriceps", "Biceps", "Forearms", "Abductors", "Triceps", "Chest", "Lower back", "Traps", "Middle back", "Lats", "Neck"];
+  const equipments = ["Body only", "Machine", "Kettlebells", "Dumbbell", "Cable", "Barbell", "Bands", "Medicine ball", "Exercise ball", "E-z curl bar", "Foam roll"];
 
-  const categories = [
-    "Strength",
-    "Streching",
-    "Plyometrics",
-    "Strongman",
-    "Powerlifting",
-    "Cardio",
-    "Crossfit",
-    "Olympic Weightlifting",
-    "Weighted Bodyweight",
-    "Assisted bodyweight",
-  ];
+  const activeFiltersCount = [
+    selectedOptions.selectedSkillLevel,
+    selectedOptions.selectedForce,
+    selectedOptions.selectedEquipment,
+    selectedOptions.selectedPrimaryMuscle?.length > 0 ? selectedOptions.selectedPrimaryMuscle : null,
+    selectedOptions.selectedCategory,
+  ].filter(Boolean).length;
 
-  const muscles = [
-    "Abdominals",
-    "Hamstrings",
-    "Calves",
-    "Shoulders",
-    "Adductors",
-    "Glutes",
-    "Quadriceps",
-    "Biceps",
-    "Forearms",
-    "Abductors",
-    "Triceps",
-    "Chest",
-    "Lower back",
-    "Traps",
-    "Middle back",
-    "Lats",
-    "Neck",
-  ];
-
-  const equipments = [
-    "Body only",
-    "Machine",
-    "Kettlebells",
-    "Dumbbell",
-    "Cable",
-    "Barbell",
-    "Bands",
-    "Medicine ball",
-    "Exercise ball",
-    "E-z curl bar",
-    "Foam roll",
-  ];
-
-  async function fetchExerciseData() {
-    try {
-      setLoading(true);
-      const response = await axios.get(
-        "http://localhost:5000/api/getallexercises"
-      );
-      setExercises(response.data.Exercisesdata);
-      setLoading(false);
-    } catch (err) {
-      console.error("Error fetching exercise data");
-    }
+  function clearAllFilters() {
+    setSelectedOptions({ selectedSkillLevel: null, selectedForce: null, selectedEquipment: null, selectedPrimaryMuscle: [], selectedCategory: null });
   }
 
   async function fetchSelectedExercises() {
     setLoading(true);
     const payload = {};
-
-    console.log(payload);
     payload.page = currentPage;
     payload.searchText = searchBarText;
-    if (selectedOptions.selectedSkillLevel) {
-      payload.selectedSkillLevel =
-        selectedOptions.selectedSkillLevel.toLowerCase();
-    }
-    if (selectedOptions.selectedForce) {
-      payload.selectedForce = selectedOptions.selectedForce.toLowerCase();
-    }
-    if (selectedOptions.selectedEquipment) {
-      payload.selectedEquipment =
-        selectedOptions.selectedEquipment.toLowerCase();
-    }
-    if (selectedOptions.selectedPrimaryMuscle != null) {
-      payload.selectedPrimaryMuscle = selectedOptions.selectedPrimaryMuscle;
-    } else {
-      payload.selectedPrimaryMuscle = [];
-    }
-    if (selectedOptions.selectedCategory) {
-      payload.selectedCategory = selectedOptions.selectedCategory.toLowerCase();
-    }
-    if (Object.keys(payload).length < 0) {
-      return;
-    }
-
-    const response = await axios.post(
-      "http://localhost:5000/api/getfilteredexercises",
-      payload
-    );
+    if (selectedOptions.selectedSkillLevel) payload.selectedSkillLevel = selectedOptions.selectedSkillLevel.toLowerCase();
+    if (selectedOptions.selectedForce) payload.selectedForce = selectedOptions.selectedForce.toLowerCase();
+    if (selectedOptions.selectedEquipment) payload.selectedEquipment = selectedOptions.selectedEquipment.toLowerCase();
+    payload.selectedPrimaryMuscle = selectedOptions.selectedPrimaryMuscle || [];
+    if (selectedOptions.selectedCategory) payload.selectedCategory = selectedOptions.selectedCategory.toLowerCase();
+    const response = await axios.post("http://localhost:5000/api/getfilteredexercises", payload);
     setExercises(response.data.filteredExercises);
     setLoading(false);
   }
 
   async function fetchLoggedInData() {
     try {
-      const response = await axios.get(
-        "http://localhost:5000/api/getloggedinuser",
-        {
-          withCredentials: true,
-        }
-      );
+      const response = await axios.get("http://localhost:5000/api/getloggedinuser", { withCredentials: true });
       setUserData(response.data.UserData);
       setWorkoutPlans(response.data.UserData.workoutPlans);
-      setNotificationCount(response.data.UserData.receivedNotifications.length);
     } catch (error) {
       console.error("Error fetching logged in user data:", error);
     }
   }
 
-  async function handleCreateWorkoutPlan() {
+  async function handleCreateWorkoutPlan(title, desc) {
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/createworkoutplan",
-        {
-          title: workoutPlanTitle,
-          description: workoutPlanDescription,
-          userId: userData.id,
-        }
-      );
-      console.log(response);
-      setOpenCategory(false);
+      await axios.post("http://localhost:5000/api/createworkoutplan", { title, description: desc, userId: userData.id });
+      fetchLoggedInData();
     } catch (error) {
       console.error("Error while creating workout plan", error);
     }
   }
 
-  const indexOfLastExercise = currentPage * exercisesPerPage;
-  const indexOfFirstExercise = indexOfLastExercise - exercisesPerPage;
-  const currentExercises = exercises.slice(
-    indexOfFirstExercise,
-    indexOfLastExercise
-  );
-
   useEffect(() => {
     fetchLoggedInData();
-    fetchExerciseData();
-    if (
-      location.state &&
-      location.state.workoutplantitle != null &&
-      location.state.workoutplanid != null
-    ) {
+    if (location.state?.workoutplantitle && location.state?.workoutplanid) {
       selectWorkoutPlan(location.state.workoutplantitle);
       selectWorkoutPlanId(location.state.workoutplanid);
     }
+    setTimeout(() => setMounted(true), 50);
   }, []);
 
-  useEffect(() => {
-    console.log(selectedOptions);
-    fetchSelectedExercises();
-  }, [selectedOptions, currentPage]);
+  useEffect(() => { fetchSelectedExercises(); }, [searchBarText, currentPage]);
+  useEffect(() => { fetchSelectedExercises(); }, [selectedOptions, currentPage]);
 
-  console.log("Exercises:", exercises);
+  const totalPages = Math.ceil(880 / exercisesPerPage);
+  const canGoBack = currentPage > 1;
+  const canGoForward = currentPage * exercisesPerPage < 880;
+
   return (
-    <div className="flex flex-col">
-      <div className="flex bg-backgroundcolor w-full">
-        <Navbar
-          currentSite={"exercises"}
-          username={userData.username}
-          notificationCount={notificationCount}
-        />
-        <main className=" grow bg-backgroundcolor">
-          <nav className="w-full h-20 flex justify-between items-center bg-backgroundcolor border-b border-gray-700">
-            <h1 className="text-3xl text-text font-bold ml-5">Exercises</h1>
-            <div className="">
-              <ProfileBox
-                nickname={userData.nickname}
-                profilepic={userData.profilepicture}
-                username={userData.username}
-              ></ProfileBox>
-            </div>
-          </nav>
-          <div className="ml-3">
-            <div>
-              <div className="text-2xl flex items-center gap-2 mt-3">
-                <h1 className="text-stone-300">Welcome back</h1>
-                <h1 className=" text-accent font-bold mr-3">
-                  {userData.username}!👋
-                </h1>
-              </div>
-              <div className="h-20 flex gap-3 mt-6 mb-5">
-                <DropdownMenuFilter
-                  label={"Level"}
-                  onSelect={(selectedSkillLevel) =>
-                    setSelectedOptions((prevOptions) => ({
-                      ...prevOptions,
-                      selectedSkillLevel,
-                    }))
-                  }
-                  selectedOption={selectedOptions.selectedSkillLevel}
-                  options={skillLevels}
-                />
-                <DropdownMenuFilter
-                  label={"Force"}
-                  onSelect={(selectedForce) =>
-                    setSelectedOptions((prevOptions) => ({
-                      ...prevOptions,
-                      selectedForce,
-                    }))
-                  }
-                  selectedOption={selectedOptions.selectedForce}
-                  options={forces}
-                />
-                <DropdownMenuFilter
-                  label={"Equipment"}
-                  onSelect={(selectedEquipment) =>
-                    setSelectedOptions((prevOptions) => ({
-                      ...prevOptions,
-                      selectedEquipment,
-                    }))
-                  }
-                  selectedOption={selectedOptions.selectedEquipment}
-                  options={equipments}
-                />
-                <DropdownMenuFilter
-                  label={"Primary Muscle"}
-                  onSelect={(selectedPrimaryMuscle) =>
-                    setSelectedOptions((prevOptions) => ({
-                      ...prevOptions,
-                      selectedPrimaryMuscle,
-                    }))
-                  }
-                  selectedOption={selectedOptions.selectedPrimaryMuscle}
-                  options={muscles}
-                ></DropdownMenuFilter>
-                <DropdownMenuFilter
-                  label={"Category"}
-                  onSelect={(selectedCategory) =>
-                    setSelectedOptions((prevOptions) => ({
-                      ...prevOptions,
-                      selectedCategory,
-                    }))
-                  }
-                  selectedOption={selectedOptions.selectedCategory}
-                  options={categories}
-                ></DropdownMenuFilter>
-                <div
-                  className=" flex flex-col w-full h-full  rounded-md bg-foreground"
-                  onClick={() => setOpenWorkoutPlans(!openWorkoutPlans)}
-                >
-                  <label className="text-base  text-gray-400 ml-6 font-semibold mt-3 self-start">
-                    Workout Plan
-                  </label>
-                  <div className="text-lg text-white font-semibold flex w-full">
-                    <p className="flex-grow pl-6 text-base">
-                      {selectedWorkoutPlan}
-                    </p>
-                    <span className="material-symbols-outlined pr-4">
-                      expand_more
-                    </span>
-                  </div>
-                  {openWorkoutPlans && (
-                    <div className="mt-6 w-full text-white bg-foreground relative rounded-md p-2 justify-center flex flex-col items-center z-50">
-                      {workoutPlans.map((workoutplan, i) => {
-                        if (workoutplan.title == selectedWorkoutPlan) {
-                          return (
-                            <div
-                              className=" text-accent font-semibold"
-                              key={i}
-                              onClick={() => (
-                                selectWorkoutPlan(null),
-                                selectWorkoutPlanId(null)
-                              )}
-                            >
-                              {workoutplan.title}
-                            </div>
-                          );
-                        }
-                        return (
-                          <div
-                            className=""
-                            key={i}
-                            onClick={() => (
-                              selectWorkoutPlan(workoutplan.title),
-                              selectWorkoutPlanId(workoutplan.id)
-                            )}
-                          >
-                            {workoutplan.title}
-                          </div>
-                        );
-                      })}
-                      <div
-                        className="flex"
-                        onClick={() => setOpenCreateDialog(!openCreateDialog)}
-                      >
-                        <p>Create new</p>
-                        <span className="material-symbols-outlined text-white text-[30px]">
-                          add
-                        </span>
-                      </div>
-                    </div>
-                  )}
-                </div>
-                {openCreateDialog && (
-                  <div className="fixed inset-0 flex items-center justify-center z-50 bg-opacity-70 bg-black">
-                    <div
-                      className=" rounded-md bg-[#18181B] flex flex-col"
-                      style={{ height: "48vh", width: "36vw" }}
-                    >
-                      <span
-                        className="material-symbols-outlined pr-4 text-white self-end p-2"
-                        onClick={() => setOpenCreateDialog(false)}
-                      >
-                        close
-                      </span>
-                      <h1 className="text-white text-2xl p-1 ml-14 font-semibold">
-                        Create Workout Plan
-                      </h1>
+    <div className="font-dm flex flex-col min-h-screen bg-backgroundcolor">
+      <div className="flex flex-1 w-full">
+        <Navbar currentSite="exercises" username={userData.username} />
 
-                      <label className="text-white font-semibold ml-16 mb-3 mt-3">
-                        Title
-                      </label>
-                      <input
-                        onChange={handleTitleChange}
-                        maxLength={35}
-                        type="text"
-                        placeholder="Title"
-                        className=" text-white p-1 bg-[#18181B] border rounded-md self-center align-middle"
-                        style={{ width: "80%" }}
-                      />
-                      <label className="text-white font-semibold ml-16 mb-3 mt-5">
-                        Description
-                      </label>
-                      <textarea
-                        maxLength={255}
-                        onChange={handleDescriptionChange}
-                        className="bg-[#18181B] border rounded-md  self-center text-white"
-                        placeholder="Description"
-                        style={{ width: "80%", height: "20%" }}
-                      ></textarea>
-                      <div className="flex grow w-full justify-end items-end gap-2">
-                        <button
-                          className="mb-5 rounded-md text-white text-sm font-semibold bg-[#2f2f35] w-20 h-8"
-                          onClick={() => setOpenCreateDialog(false)}
-                        >
-                          Cancel
-                        </button>
-                        <button
-                          onClick={handleCreateWorkoutPlan}
-                          disabled={workoutPlanTitle.length < 3}
-                          className=" bg-accent disabled:opacity-50 disabled:bg-[#2f2f35]   mb-5 mr-5 rounded-md text-white text-sm font-semibold bg-accentColor w-20 h-8"
-                        >
-                          Create
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                )}
+        <main className="flex-1 flex flex-col bg-backgroundcolor">
+
+          {/* ── Top bar ── */}
+          <nav className="sticky top-0 z-30 w-full h-16 flex items-center justify-between px-6 bg-backgroundcolor/80 backdrop-blur-md border-b border-white/[0.06]">
+            <h1 className="font-bebas text-2xl text-text tracking-[3px]">EXERCISES</h1>
+            <ProfileBox nickname={userData.nickname} profilepic={userData.profilepicture} username={userData.username} />
+          </nav>
+
+          <div className={`flex-1 px-6 pb-10 transition-all duration-700 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"}`}>
+
+            {/* ── Page heading ── */}
+            <div className="mt-8 mb-6">
+              <p className="text-white/35 text-sm font-medium tracking-[2px] uppercase mb-1">Library</p>
+              <div className="flex items-baseline gap-3">
+                <h2 className="font-bebas text-5xl text-text tracking-[2px] leading-none">
+                  FIND YOUR <span className="text-accent">EXERCISE</span>
+                </h2>
               </div>
-              <div className="flex w-full align-middle justify-between gap-3">
-                <input
-                  onChange={handleSearchbardChange}
-                  placeholder="Search bar"
-                  className="  text-text bg-transparent border-white border rounded-lg"
-                ></input>
-                <div>
-                  <button
-                    onClick={() => setCurrentPage(currentPage - 1)}
-                    disabled={currentPage == 1}
-                  >
-                    <div className="flex justify-center items-center rotate-180 mr-3">
-                      <span className="material-symbols-outlined text-gray-400 bg-[#1a1a1a] p-2 rounded-lg  ">
-                        arrow_forward_ios
-                      </span>
-                    </div>
-                  </button>
-                  <button
-                    onClick={() => setCurrentPage(currentPage + 1)}
-                    disabled={currentPage * exercisesPerPage >= 880}
-                  >
-                    <div className="flex justify-center items-center mr-3">
-                      <span className="material-symbols-outlined text-gray-400 bg-[#1a1a1a] p-2 rounded-lg  ">
-                        arrow_forward_ios
-                      </span>
-                    </div>
-                  </button>
-                </div>
-              </div>
-              <Exercises
-                exercises={exercises}
-                loading={loading}
-                workoutPlanId={selectedWorkoutPlanId}
-                userId={userData.id}
-              ></Exercises>
+              <p className="text-white/35 text-sm mt-2">880+ exercises with detailed instructions and filters.</p>
             </div>
+
+            {/* ── Search + pagination row ── */}
+            <div className="flex items-center gap-3 mb-5">
+              {/* Search */}
+              <div className="relative flex-1 max-w-sm">
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-[18px] text-white/25">
+                  search
+                </span>
+                <input
+                  onChange={e => setSearchbarText(e.target.value)}
+                  placeholder="Search exercises…"
+                  className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl pl-11 pr-4 py-3 text-text text-sm outline-none focus:border-accent/50 focus:shadow-[0_0_0_3px_rgba(70,182,53,0.07)] transition-all placeholder:text-white/25"
+                />
+              </div>
+
+              {/* Spacer */}
+              <div className="flex-1" />
+
+              {/* Pagination */}
+              <div className="flex items-center gap-2 bg-white/[0.03] border border-white/[0.08] rounded-xl px-3 py-2">
+                <button
+                  onClick={() => setCurrentPage(p => p - 1)}
+                  disabled={!canGoBack}
+                  className="flex items-center justify-center w-8 h-8 rounded-lg text-white/40 hover:text-text hover:bg-white/[0.06] disabled:opacity-25 disabled:cursor-not-allowed transition-all"
+                >
+                  <span className="material-symbols-outlined text-[18px]">chevron_left</span>
+                </button>
+                <div className="flex items-center gap-1 px-2">
+                  <span className="text-sm font-semibold text-text">{currentPage}</span>
+                  <span className="text-white/30 text-sm">/</span>
+                  <span className="text-white/30 text-sm">{totalPages}</span>
+                </div>
+                <button
+                  onClick={() => setCurrentPage(p => p + 1)}
+                  disabled={!canGoForward}
+                  className="flex items-center justify-center w-8 h-8 rounded-lg text-white/40 hover:text-text hover:bg-white/[0.06] disabled:opacity-25 disabled:cursor-not-allowed transition-all"
+                >
+                  <span className="material-symbols-outlined text-[18px]">chevron_right</span>
+                </button>
+              </div>
+            </div>
+
+            {/* ── Filter pills row ── */}
+            <div className="flex flex-wrap items-center gap-2 mb-6">
+              <span className="text-[11px] font-semibold tracking-[2px] uppercase text-white/25 mr-1">Filters</span>
+
+              <FilterPill
+                label="Level"
+                icon="signal_cellular_alt"
+                selectedOption={selectedOptions.selectedSkillLevel}
+                options={skillLevels}
+                onSelect={v => setSelectedOptions(p => ({ ...p, selectedSkillLevel: v }))}
+              />
+              <FilterPill
+                label="Force"
+                icon="bolt"
+                selectedOption={selectedOptions.selectedForce}
+                options={forces}
+                onSelect={v => setSelectedOptions(p => ({ ...p, selectedForce: v }))}
+              />
+              <FilterPill
+                label="Equipment"
+                icon="fitness_center"
+                selectedOption={selectedOptions.selectedEquipment}
+                options={equipments}
+                onSelect={v => setSelectedOptions(p => ({ ...p, selectedEquipment: v }))}
+              />
+              <FilterPill
+                label="Primary Muscle"
+                icon="sports_gymnastics"
+                selectedOption={selectedOptions.selectedPrimaryMuscle?.length > 0 ? selectedOptions.selectedPrimaryMuscle : null}
+                options={muscles}
+                onSelect={v => setSelectedOptions(p => ({ ...p, selectedPrimaryMuscle: v ? [v] : [] }))}
+              />
+              <FilterPill
+                label="Category"
+                icon="category"
+                selectedOption={selectedOptions.selectedCategory}
+                options={categories}
+                onSelect={v => setSelectedOptions(p => ({ ...p, selectedCategory: v }))}
+              />
+
+              {/* Divider */}
+              <div className="w-px h-6 bg-white/[0.08] mx-1" />
+
+              <WorkoutPlanPill
+                selectedWorkoutPlan={selectedWorkoutPlan}
+                workoutPlans={workoutPlans}
+                onSelect={(title, id) => { selectWorkoutPlan(title); selectWorkoutPlanId(id); }}
+                onCreateNew={handleCreateWorkoutPlan}
+              />
+
+              {/* Clear all */}
+              {activeFiltersCount > 0 && (
+                <button
+                  onClick={clearAllFilters}
+                  className="flex items-center gap-1 px-3 py-1.5 rounded-full text-[12px] text-white/35 hover:text-white/60 hover:bg-white/[0.04] border border-white/[0.06] transition-all"
+                >
+                  <span className="material-symbols-outlined text-[14px]">filter_alt_off</span>
+                  Clear ({activeFiltersCount})
+                </button>
+              )}
+            </div>
+
+            {/* ── Active plan banner ── */}
+            {selectedWorkoutPlan && (
+              <div className="relative flex items-center gap-3 px-5 py-3.5 mb-5 bg-accent/[0.07] border border-accent/20 rounded-xl overflow-hidden">
+                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent/40 to-transparent" />
+                <span className="material-symbols-outlined text-[18px] text-accent">list_alt</span>
+                <span className="text-sm text-text">
+                  Adding exercises to <span className="font-semibold text-accent">{selectedWorkoutPlan}</span>
+                </span>
+                <button
+                  onClick={() => { selectWorkoutPlan(null); selectWorkoutPlanId(null); }}
+                  className="ml-auto text-white/30 hover:text-white/60 transition-colors"
+                >
+                  <span className="material-symbols-outlined text-[16px]">close</span>
+                </button>
+              </div>
+            )}
+
+            {/* ── Results count ── */}
+            {!loading && exercises.length > 0 && (
+              <p className="text-[11px] text-white/25 tracking-[1.5px] uppercase mb-4">
+                {exercises.length} exercises found
+              </p>
+            )}
+
+            {/* ── Exercise grid ── */}
+            <Exercises
+              exercises={exercises}
+              loading={loading}
+              workoutPlanId={selectedWorkoutPlanId}
+              userId={userData.id}
+            />
+
+            {/* ── Bottom pagination ── */}
+            {exercises.length > 0 && (
+              <div className="flex items-center justify-center gap-3 mt-8">
+                <button
+                  onClick={() => { setCurrentPage(p => p - 1); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+                  disabled={!canGoBack}
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-white/[0.08] text-sm text-white/50 hover:text-text hover:border-white/20 disabled:opacity-25 disabled:cursor-not-allowed transition-all"
+                >
+                  <span className="material-symbols-outlined text-[18px]">arrow_back</span>
+                  Previous
+                </button>
+                <span className="text-sm text-white/30 font-medium px-4">Page {currentPage} of {totalPages}</span>
+                <button
+                  onClick={() => { setCurrentPage(p => p + 1); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+                  disabled={!canGoForward}
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-white/[0.08] text-sm text-white/50 hover:text-text hover:border-white/20 disabled:opacity-25 disabled:cursor-not-allowed transition-all"
+                >
+                  Next
+                  <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+                </button>
+              </div>
+            )}
+
           </div>
         </main>
       </div>
-      <Footer></Footer>
+      <Footer />
     </div>
   );
 }
